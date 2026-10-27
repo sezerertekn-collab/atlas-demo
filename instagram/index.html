@@ -1,0 +1,216 @@
+<title>Atlas Instagram Demosu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: solda telefon maketi, sağda açıklama; altında içerik sistemi, Helin'in kolaylık paketi ve global notlar */
+:root {
+  --bg: #F7F5F0; --surface: #FFFFFF; --ink: #17212B; --muted: #5E6973; --line: #E1DCD2;
+  --brick: #A8402C; --brick-soft: #F6E7E2; --moss: #1E4C45; --moss-soft: #E1EEEA; --sand: #E9DFCB;
+  --p1: #1E4C45; --p2: #A8402C; --p3: #5B6B8C; --p4: #B88A2E;
+  --display: "Fraunces", Georgia, serif; --body: "Manrope", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #14191E; --surface: #1C2329; --ink: #ECE8E0; --muted: #A3ABB3; --line: #2F3942;
+  --brick: #E07A62; --brick-soft: #3A2520; --moss: #7FC4B6; --moss-soft: #1C3330; --sand: #3A3426;
+  --p1: #7FC4B6; --p2: #E07A62; --p3: #9DB0D6; --p4: #E0B45A; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #14191E; --surface: #1C2329; --ink: #ECE8E0; --muted: #A3ABB3; --line: #2F3942;
+  --brick: #E07A62; --brick-soft: #3A2520; --moss: #7FC4B6; --moss-soft: #1C3330; --sand: #3A3426;
+  --p1: #7FC4B6; --p2: #E07A62; --p3: #9DB0D6; --p4: #E0B45A; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; }
+.wrap { max-width: 1060px; margin: 0 auto; padding-block: 44px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 64px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+h3 { font-size: 1.15rem; }
+p { margin: 0; max-width: 64ch; }
+a { color: var(--brick); }
+.kicker { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brick); font-weight: 700; }
+header { display: flex; flex-direction: column; gap: 14px; }
+header p { font-size: 1.15rem; color: var(--muted); }
+section { display: flex; flex-direction: column; gap: 22px; }
+.split { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 40px; align-items: start; }
+.phone { width: 100%; max-width: 340px; border: 10px solid var(--ink); border-radius: 40px; background: var(--surface); overflow: hidden; font-size: 13px; line-height: 1.4; color: var(--ink); }
+.phone .bar { padding: 10px 16px 6px; display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; }
+.phone .prof { padding: 8px 16px 12px; display: flex; flex-direction: column; gap: 10px; }
+.prof .top { display: flex; gap: 16px; align-items: center; }
+.avatar { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(140deg, var(--moss-soft), var(--brick-soft)); border: 2px solid var(--brick); display: grid; place-items: center; font-size: 10px; text-align: center; color: var(--muted); flex: none; }
+.stats { display: flex; gap: 18px; font-size: 12px; text-align: center; }
+.stats b { display: block; font-size: 15px; }
+.bio { font-size: 12.5px; }
+.bio b { display: block; }
+.bio .link { color: #1b4fa8; }
+.pbtns { display: flex; gap: 6px; }
+.pbtns span { flex: 1; text-align: center; padding: 6px; border-radius: 8px; font-weight: 600; font-size: 12px; background: var(--moss-soft); }
+.pbtns span.p { background: var(--brick); color: #fff; }
+.hl { display: flex; gap: 10px; padding: 4px 16px 12px; overflow-x: auto; font-size: 10px; text-align: center; }
+.hl div { flex: none; width: 56px; display: flex; flex-direction: column; gap: 4px; align-items: center; }
+.hl i { width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--sand); display: block; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.cell { aspect-ratio: 4/5; padding: 8px; display: flex; flex-direction: column; justify-content: flex-end; font-size: 10.5px; line-height: 1.25; color: #fff; font-weight: 600; position: relative; }
+.cell small { font-weight: 400; opacity: 0.85; display: block; }
+.cell.c1 { background: var(--p1); } .cell.c2 { background: var(--p2); } .cell.c3 { background: var(--p3); } .cell.c4 { background: var(--p4); }
+.cell::before { content: attr(data-k); position: absolute; top: 6px; left: 8px; font-size: 9px; letter-spacing: 0.08em; opacity: 0.8; }
+.cell.ph { background-size: cover; background-position: center top; text-shadow: 0 1px 3px rgba(0,0,0,0.7); }
+.cell.ph::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0) 100%); }
+.cell.ph > * , .cell.ph { z-index: 0; } .cell.ph small, .cell.ph::before { position: relative; z-index: 1; }
+.cell.ph { isolation: isolate; } .cell.ph::after { z-index: -1; }
+.notes { display: flex; flex-direction: column; gap: 18px; }
+.note { border-left: 3px solid var(--brick); padding-left: 16px; display: flex; flex-direction: column; gap: 4px; }
+.note b { font-weight: 700; }
+.note p { color: var(--muted); font-size: 0.97rem; }
+.pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.pillar { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; border-top: 4px solid var(--p1); }
+.pillar.p2 { border-top-color: var(--p2); } .pillar.p3 { border-top-color: var(--p3); } .pillar.p4 { border-top-color: var(--p4); }
+.pillar .share { font-family: var(--display); font-size: 1.6rem; }
+.pillar ul { margin: 0; padding-left: 1.1em; font-size: 0.93rem; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
+.tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+th { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+.scripts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.script { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; font-size: 0.95rem; }
+.script .hook { font-family: var(--display); font-size: 1.2rem; font-style: italic; }
+.script ol { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; color: var(--muted); }
+.script .cta { font-weight: 700; color: var(--moss); }
+.rule { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.rule div { background: var(--moss-soft); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.rule b { font-family: var(--display); font-size: 1.3rem; font-weight: 600; }
+.rule p { font-size: 0.93rem; color: var(--muted); }
+.tools { display: flex; flex-direction: column; gap: 14px; }
+.tool { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.tool .when { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brick); font-weight: 700; padding-top: 3px; }
+.tool .body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.tool .body p { font-size: 0.95rem; color: var(--muted); }
+.tool .helin { font-size: 0.9rem; background: var(--brick-soft); color: var(--ink); border-radius: 8px; padding: 8px 12px; max-width: none; }
+.tool .helin b { color: var(--brick); }
+.global { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.g { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 0.95rem; }
+.g .num { font-family: var(--display); font-size: 1.8rem; font-variant-numeric: tabular-nums; }
+.g p { color: var(--muted); }
+.g .so { color: var(--ink); font-weight: 600; }
+.sources { font-size: 0.85rem; color: var(--muted); }
+.sources ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 3px; max-width: none; }
+@media (max-width: 760px) { .split { grid-template-columns: minmax(0, 1fr); } .tool { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="kicker">Atlas Real Estate London · Instagram önerisi ve Helin'in kolaylık paketi</span>
+  <h1>Instagram zaten çalışıyor. Şimdi tek bir hikâyeye bağlanıyor.</h1>
+  <p>16,3 bin takipçi ve 190 bin izlenen bir video var. Bu demo, hesabın mevcut gücünü bozmadan bio, ızgara ve Reels'i site ile aynı cümleye bağlıyor; sonra Helin'in haftada bir saatten fazla vermesini gerektirmeyen bir üretim düzeni öneriyor.</p>
+</header>
+
+<section>
+  <span class="kicker">01 · Profil</span>
+  <h2>Yeni bio: beş iddia yerine tek vaat</h2>
+  <div class="split">
+    <div class="phone">
+      <div class="bar"><span>atlasrealestatelondon</span><span>⋯</span></div>
+      <div class="prof">
+        <div class="top"><div class="avatar" style="background:url(img/avatar.jpg) center/cover"></div><div class="stats"><span><b>313</b>gönderi</span><span><b>16,3 B</b>takipçi</span><span><b>2.633</b>takip</span></div></div>
+        <div class="bio"><b>Helin Özçelik · Atlas Real Estate London</b>Londra'yı sizin için okuyoruz.<br>Satın alma · Kiralama · Öğrenci evi<br>Rakamı baştan söyleriz. Türkçe, tek muhatap.<br>Bir sonraki İstanbul buluşması için ↓<br><span class="link">atlasrealestatelondon.com/basla</span></div>
+        <div class="pbtns"><span class="p">WhatsApp</span><span>Mesaj</span><span>Rehber al</span></div>
+      </div>
+      <div class="hl"><div><i></i>Başla buradan</div><div><i></i>Taşınma</div><div><i></i>Yatırım</div><div><i></i>Öğrenci</div><div><i></i>Müşteriler</div><div><i></i>Etkinlik</div></div>
+      <div class="grid">
+        <div class="cell c1 ph" data-k="HELİN" style="background-image:url(img/helin-portre.jpg)">Londra'ya taşınmadan önce yaptığım 3 hata<small>Reel · Helin konuşuyor</small></div>
+        <div class="cell c2" data-k="RAKAM">£500.000'lik evde kaç para vergi?<small>Carousel · hesap tablosu</small></div>
+        <div class="cell c3 ph" data-k="MÜŞTERİ" style="background-image:url(img/mag.jpg)">Ayşe Hanım'ın 3 haftada ev bulma hikâyesi<small>Carousel · önce/sonra</small></div>
+        <div class="cell c4 ph" data-k="PROJE" style="background-image:url(img/bow-green.jpg)">Bow Green'i kim almalı, kim almamalı<small>Reel · sahada</small></div>
+        <div class="cell c1 ph" data-k="HELİN" style="background-image:url(img/etkinlik-helin.jpg)">Kiracı hakları 1 Mayıs'ta değişti, size etkisi<small>Reel · Helin konuşuyor</small></div>
+        <div class="cell c2" data-k="RAKAM">Lira vs sterlin: 2020'den beri kira geliri<small>Carousel · grafik</small></div>
+        <div class="cell c1 ph" data-k="HELİN" style="background-image:url(img/helin-istasyon.jpg)">Bir günüm: 4 ev, 2 aile, 1 WhatsApp sesli<small>Reel · perde arkası</small></div>
+        <div class="cell c3 ph" data-k="MÜŞTERİ" style="background-image:url(img/gala.jpg)">UCL'e başlayan Can için kampüse 12 dk<small>Carousel · müşteri</small></div>
+        <div class="cell c2" data-k="RAKAM">Kirala mı, al mı? 4 yıllık hesap<small>Carousel · tablo</small></div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><b>Tek vaat, aynı cümle.</b><p>"Londra'yı sizin için okuyoruz" bio'da, sitenin ilk ekranında ve her videonun kapanışında aynı. Şu anki bio beş farklı şey söylüyor (lüks, ticari, öğrenci, profesyonel, yatırım); yeni bio üç yolu sayıyor ve bırakıyor.</p></div>
+      <div class="note"><b>Helin'in adı en üstte.</b><p>Hesap adı değişmiyor, ama görünen ad "Helin Özçelik · Atlas" oluyor. Aramada hem Helin'i hem Atlas'ı yazan bulsun.</p></div>
+      <div class="note"><b>Link tek bir sayfaya gidiyor.</b><p>WhatsApp linki kalıyor (butonda), bio linki ise sitedeki "Başla" sayfasına: üç yol, üç buton, hiç form doldurmadan WhatsApp'a düşen akış.</p></div>
+      <div class="note"><b>Öne çıkanlar bir menü gibi.</b><p>Bodrum, LSQ Event, Battersea gibi proje ve etkinlik adları yerine müşterinin diliyle: Başla buradan, Taşınma, Yatırım, Öğrenci, Müşteriler, Etkinlik.</p></div>
+      <div class="note"><b>Izgara dört renkte okunuyor.</b><p>Her gönderi dört sütundan birine ait: Helin, Rakam, Müşteri, Proje. Proje renderları artık ızgaranın üçte biri değil, dörtte biri. Kalan her şey Helin'in sesi.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">02 · İçerik sistemi</span>
+  <h2>Dört sütun, haftada dört gönderi</h2>
+  <div class="pillars">
+    <div class="pillar"><span class="share">40%</span><h3>Helin konuşuyor</h3><p>Kameraya bakan, 30-45 saniyelik, tek bir soruya cevap veren Reels. Hesabın kanıtlanmış formatı.</p><ul><li>"Londra'ya taşınmadan önce…"</li><li>"Bana en çok sorulan soru…"</li><li>Haftanın bir günü: perde arkası</li></ul></div>
+    <div class="pillar p2"><span class="share">25%</span><h3>Rakam</h3><p>Carousel: vergi, kira, kur, maliyet. Kaydedilen ve paylaşılan içerik bu. Siteyle aynı hesaplayıcıdan beslenir.</p><ul><li>Damga vergisi tabloları</li><li>Bölge bazlı kira karşılaştırması</li><li>Lira / sterlin grafikleri</li></ul></div>
+    <div class="pillar p3"><span class="share">20%</span><h3>Müşteri</h3><p>Her ay bir aile hikâyesi: ihtiyaç, süreç, sonuç. İzin alınmış, isimli ya da ilk adla. "Tavsiye" öne çıkanının ızgaraya taşınmış hali.</p><ul><li>Önce / sonra carousel</li><li>Müşterinin sesli WhatsApp mesajı (izinle) altyazılı</li></ul></div>
+    <div class="pillar p4"><span class="share">15%</span><h3>Proje</h3><p>Render değil, Helin sahada. "Bu projeyi kim almalı, kim almamalı" formatı. Geliştirici logosu küçük, Helin'in yorumu büyük.</p><ul><li>Sahadan 45 sn Reel</li><li>Etkinlik duyurusu (Helin'in yüzüyle)</li></ul></div>
+  </div>
+  <div class="rule">
+    <div><b>Kanca ilk 2 saniyede</b><p>190 bin izlenen video ile 3 bin izlenen video arasındaki fark yüz değil, açılış cümlesi. Her Reel bir soru ya da iddiayla başlar.</p></div>
+    <div><b>Her gönderide tek aksiyon</b><p>"Randevu al", "Rehberi iste", "WhatsApp'tan yaz". İkisi birden olmaz.</p></div>
+    <div><b>Türkçe önce, İngilizce altyazı</b><p>Kitle Türkiye ve Londra'daki Türkler. İngilizce altyazı, Türk olmayan alıcı ve geliştirici ilişkisi için yeter.</p></div>
+    <div><b>Kurumsal reklam yok</b><p>Üçüncü taraf kampanyalar (üyelik, sponsor) hikâye akışını bölüyor; Story'de kalır, ızgaraya girmez.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">03 · Üç Reel senaryosu</span>
+  <h2>İlk hafta çekilecek üç video</h2>
+  <div class="scripts">
+    <div class="script"><span class="kicker">Helin konuşuyor · 40 sn</span><span class="hook">"Londra'da yurt dışından ev alanın ödediği iki ek vergi var. Rakamı söylüyorum."</span><ol><li>Yurt dışında yaşıyorsanız +%2, ikinci evse +%5.</li><li>£500 bin'lik evde bu yaklaşık £50 bin demek.</li><li>Biz bunu ilk görüşmede hesaplıyoruz, sürpriz olmuyor.</li></ol><span class="cta">Kapanış: "Kendi rakamınız için WhatsApp'tan 'VERGİ' yazın."</span></div>
+    <div class="script"><span class="kicker">Perde arkası · 45 sn</span><span class="hook">"Bugün İstanbul'daki bir aile için 4 ev gezdim, onlar hiç uçağa binmeden."</span><ol><li>Telefon kamerasıyla 3 kısa kesit: kapı, salon, pencereden manzara.</li><li>WhatsApp sesli mesajın ekran kaydı (izinle).</li><li>"Akşam karar verdiler, yarın başvuru."</li></ol><span class="cta">Kapanış: "Uzaktan ev arıyorsanız 'VİDEO' yazın."</span></div>
+    <div class="script"><span class="kicker">Rakam + Helin · 35 sn</span><span class="hook">"Çocuğunuz Londra'da okuyacaksa ev kiralamak mı, almak mı mantıklı?"</span><ol><li>4 yıllık kira toplamı vs. alım + satış senaryosu, tek kart.</li><li>"Cevap bölgeye ve bütçeye göre değişiyor, ikisini de hesapladım."</li></ol><span class="cta">Kapanış: "Hesap tablosu için 'ÖĞRENCİ' yazın."</span></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">04 · Helin'in kolaylık paketi</span>
+  <h2>Helin'in işi iki şey: müşteriyle konuşmak ve kameraya konuşmak. Gerisi otomatik.</h2>
+  <p>Her araç bir soruyla seçildi: "Helin'in önüne iş mi çıkarıyor, iş mi alıyor?" Aşağıdakilerin hiçbiri yeni bir panel öğrenmeyi gerektirmiyor; hepsi Helin'in zaten kullandığı WhatsApp ve telefon kamerası etrafında kuruluyor.</p>
+  <div class="tools">
+    <div class="tool"><span class="when">Hafta 1</span><div class="body"><h3>WhatsApp Business: anahtar kelimeyle otomatik cevap</h3><p>Reels'te söylenen "VERGİ", "VİDEO", "ÖĞRENCİ" kelimeleri geldiğinde ilgili rehber ve görüşme linki otomatik gider. Mesai dışı mesajlara "yarın 10:00'a kadar dönüyorum" cevabı. Hızlı yanıtlar: en sık 10 soru tek dokunuşla.</p><div class="helin"><b>Helin'e düşen:</b> hiçbir şey. Sadece sıcak müşteri geldiğinde kendisi devam eder.</div></div></div>
+    <div class="tool"><span class="when">Hafta 1</span><div class="body"><h3>Randevu linki (Cal.com veya Calendly)</h3><p>15 dakikalık görüşme için tek link; Türkiye saatine göre akşam slotları açık. Sitede, bio'da ve WhatsApp otomatik cevabında aynı link. Randevu takvime düşer, hatırlatma otomatik gider.</p><div class="helin"><b>Helin'e düşen:</b> takvimde müsait saatlerini bir kez işaretlemek.</div></div></div>
+    <div class="tool"><span class="when">Hafta 2</span><div class="body"><h3>Sesli mesajdan gönderiye</h3><p>Helin bir konuda 2 dakikalık WhatsApp sesli mesaj bırakır; ekip (ya da yapay zekâ) bunu carousel metnine, Reel senaryosuna ve blog paragrafına çevirir, Helin onaylar. Haftada 4 gönderi için 10 dakikalık sesli mesaj yeter.</p><div class="helin"><b>Helin'e düşen:</b> yürürken konuşmak ve "tamam" demek.</div></div></div>
+    <div class="tool"><span class="when">Hafta 2</span><div class="body"><h3>Çekim köşesi ve şablonlar</h3><p>Ofiste bir köşe: sabit telefon tutucu, bir ışık, bir arka plan. Ayda bir 60 dakikalık seansta 6-8 Reel çekilir. CapCut'ta hazır Atlas şablonu: altyazı, logo, kapanış kartı otomatik. Kurguyu Helin yapmaz.</p><div class="helin"><b>Helin'e düşen:</b> ayda bir saat, hazır senaryoyla kameraya konuşmak.</div></div></div>
+    <div class="tool"><span class="when">Hafta 3</span><div class="body"><h3>Site formu doğrudan WhatsApp'a</h3><p>Sitedeki her "Başla" butonu bir form değil, önceden yazılmış bir WhatsApp mesajı açar: "Merhaba Helin, Londra'ya taşınmayı düşünüyorum, bütçem …". Form doldurma yok, CRM paneli yok, kayıp lead yok.</p><div class="helin"><b>Helin'e düşen:</b> her zamanki gibi WhatsApp'a bakmak.</div></div></div>
+    <div class="tool"><span class="when">Hafta 3</span><div class="body"><h3>Tek sayfalık müşteri listesi</h3><p>Her yeni WhatsApp görüşmesi otomatik olarak bir Google Sheet'e düşer (ad, yol, bütçe, tarih). Helin'in görmesi gereken tek şey: "bu hafta kim bekliyor". Cuma günü otomatik özet mesajı.</p><div class="helin"><b>Helin'e düşen:</b> cuma özetini okumak.</div></div></div>
+    <div class="tool"><span class="when">Ay 2</span><div class="body"><h3>Google İşletme Profili ve yorum isteme</h3><p>Her tamamlanan işte müşteriye tek dokunuşla "yorum bırakır mısınız" mesajı (şablon). Yapay zekâ aramaları ve Google, yorumu olan danışmanı öne çıkarıyor.</p><div class="helin"><b>Helin'e düşen:</b> anahtar teslimde bir şablon mesajı göndermek.</div></div></div>
+    <div class="tool"><span class="when">Ay 2</span><div class="body"><h3>Aylık Türkçe bülten, otomatik derlenmiş</h3><p>O ayın gönderileri ve bir Helin notu, tek e-posta. Geçmiş etkinlik katılımcıları ve WhatsApp listesi aboneliğe davet edilir. İstanbul buluşması duyuruları buradan gider.</p><div class="helin"><b>Helin'e düşen:</b> üç cümlelik aylık not.</div></div></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">05 · Globalde ne oluyor</span>
+  <h2>Bu demonun dayandığı dış veriler</h2>
+  <div class="global">
+    <div class="g"><span class="num">Reels = erişim, carousel = kayıt</span><p>50 bin takipçinin altındaki hesaplarda Reels daha çok erişim, carousel daha çok etkileşim ve kayıt getiriyor (Inman, Temmuz 2026; Socialinsider 2026 verisi).</p><span class="so">Bu yüzden: Helin videoları erişim için, Rakam carousel'ları kayıt için.</span></div>
+    <div class="g"><span class="num">%0,5</span><p>Instagram'da ortalama organik etkileşim oranı 2025'te %0,48'e düştü; 10-50 bin takipçi diliminde Reels ortalama 2.460 izlenme alıyor (Socialinsider).</p><span class="so">Atlas'ın %1 etkileşimi ve 3-15 bin izlenmesi ortalamanın üstünde; 190 bin istisna değil, hedef.</span></div>
+    <div class="g"><span class="num">Kişi &gt; kurum</span><p>2026 emlak pazarlama raporları aynı şeyi söylüyor: alıcı ajansı değil danışmanı takip ediyor; ev sahipleri danışman seçerken Instagram'a ve video düzenine bakıyor.</p><span class="so">Bu yüzden: hesap adı aynı, görünen yüz Helin.</span></div>
+    <div class="g"><span class="num">Her sayfada tek aksiyon</span><p>2026 "yüksek dönüşümlü danışman sitesi" rehberleri: en fazla 5 menü, her sayfada telefon ve iletişim, en az 3 yakalama noktası, 3+ isimli müşteri yorumu, mobil önce (trafiğin yarıdan fazlası telefon).</p><span class="so">Site demosu bu şablona göre kuruldu: WhatsApp her yerde, hesaplayıcı, üç yol.</span></div>
+    <div class="g"><span class="num">WhatsApp otomasyonu</span><p>Emlakta mesajlaşma otomasyonu artık standart: anında ilk cevap, bütçe/bölge/zaman sorularıyla ön eleme, randevu slotu önerme, hatırlatma. Vaka çalışmalarında yanıt süresi %70 düşüyor (SleekFlow, satıcı verisi).</p><span class="so">Helin'in paketi CRM değil, WhatsApp üstüne kuruldu.</span></div>
+    <div class="g"><span class="num">Yapay zekâ araması</span><p>İnsanlar "Londra'da Türkçe konuşan emlakçı"yı ChatGPT'ye soruyor; bu araçlar tutarlı ad-adres-telefon, net bölge sayfaları ve Google yorumları olan işletmeleri öne çıkarıyor (Temmuz 2026).</p><span class="so">Bu yüzden: Google profili ve yorum isteme paketin içinde.</span></div>
+    <div class="g"><span class="num">Uyum = güven</span><p>İngiltere'de redress scheme üyeliği zorunlu ve logosu sitede gösterilmeli; kiralama için CMP; satış için HMRC AML kaydı (2025-26'da £835 bin ceza kesildi); ilanlarda "material information" zorunlu.</p><span class="so">Site demosunun footer'ı bu rozetler için yer ayırdı; Helin'den belgeler istenecek.</span></div>
+    <div class="g"><span class="num">Kiracı hakları</span><p>Renters' Rights Act 1 Mayıs 2026'da yürürlüğe girdi: Section 21 kalktı, sabit süreli sözleşme bitti, peşin kira sınırlandı.</p><span class="so">İlk hafta Reel konusu ve "Londra'da ev kiralama rehberi"nin güncel sebebi.</span></div>
+  </div>
+</section>
+
+<section class="sources">
+  <span class="kicker">Kaynaklar</span>
+  <ul>
+    <li><a href="https://www.inman.com/2026/07/06/latest-data-reveals-social-media-engagement/">Inman: What the latest data reveals about social media engagement (Temmuz 2026)</a></li>
+    <li><a href="https://www.socialinsider.io/instagram-benchmarks">Socialinsider: Instagram organic benchmarks 2026</a></li>
+    <li><a href="https://www.luxurypresence.com/blogs/perfect-real-estate-agent-website/">Luxury Presence: Real estate website design, the 2026 guide</a></li>
+    <li><a href="https://www.autoreelapp.com/blog/9-social-media-marketing-trends-for-real-estate-professionals-that-actually-drive-listings-in-2026">AutoReel: 9 social media trends for real estate 2026</a></li>
+    <li><a href="https://sleekflow.io/en-gb/blog/ai-for-real-estate-agent">SleekFlow: AI and WhatsApp automation for real estate agents</a></li>
+    <li><a href="https://thelochsidepress.com/2026/07/27/how-estate-agents-optimise-listings-for-ai-search-and-chatgpt-visibility/">How estate agents optimise for AI search (Temmuz 2026)</a></li>
+    <li><a href="https://www.homeflow.co.uk/posts/startup-estate-agencies-understanding-compliance">Homeflow: Startup estate agencies, understanding compliance (Temmuz 2026)</a></li>
+    <li><a href="https://www.douglasandgordon.com/posts/london-property-market-update-2026-sales-lettings-and-reform/">Douglas &amp; Gordon: London market update 2026 (Renters' Rights Act)</a></li>
+    <li><a href="https://www.skyboundwealth.com/technical-guides/uk-property-tax-for-expats-sdlt-non-resident-surcharge-buy-to-let-tax-guide-2026">Skybound Wealth: SDLT for non-resident buyers 2026</a></li>
+  </ul>
+</section>
+
+</div>

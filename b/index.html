@@ -1,0 +1,484 @@
+<title>Versiyon B · Atlas Site Demosu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: kişi önde, tek sütun; üç yol sekmeli, rehberler bilgi ekranı olarak açılır, ortada hesaplayıcı */
+:root {
+  --bg: #F7F5F0; --surface: #FFFFFF; --ink: #17212B; --muted: #5E6973; --line: #E1DCD2;
+  --brick: #A8402C; --brick-soft: #F6E7E2; --moss: #1E4C45; --moss-soft: #E1EEEA;
+  --display: "Fraunces", Georgia, "Times New Roman", serif; --body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --logo-filter: none;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #14191E; --surface: #1C2329; --ink: #ECE8E0; --muted: #A3ABB3; --line: #2F3942;
+  --brick: #E07A62; --brick-soft: #3A2520; --moss: #7FC4B6; --moss-soft: #1C3330; --logo-filter: invert(1); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #14191E; --surface: #1C2329; --ink: #ECE8E0; --muted: #A3ABB3; --line: #2F3942;
+  --brick: #E07A62; --brick-soft: #3A2520; --moss: #7FC4B6; --moss-soft: #1C3330; --logo-filter: invert(1); color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2.4rem, 6vw, 4.2rem); }
+h2 { font-size: clamp(1.7rem, 3.5vw, 2.5rem); }
+h3 { font-size: 1.25rem; }
+h4 { margin: 0; font-family: var(--body); font-size: 0.95rem; font-weight: 700; }
+p { margin: 0; max-width: 62ch; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--brick); outline-offset: 3px; }
+.band { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.in { max-width: 1100px; margin: 0 auto; }
+.demo-bar { background: var(--moss); color: #fff; font-size: 0.85rem; padding-block: 8px; }
+.demo-bar .in { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
+nav.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+nav.top .in { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; flex-wrap: wrap; }
+.brand { display: flex; flex-direction: column; gap: 0; text-decoration: none; line-height: 1; }
+.brand .mark { font-family: var(--display); font-weight: 600; font-size: 1.5rem; letter-spacing: 0.12em; }
+.brand .who { font-family: var(--body); font-size: 0.62rem; font-weight: 600; color: var(--ink); letter-spacing: 0.22em; text-transform: uppercase; margin-top: 3px; }
+nav.top ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 22px; flex-wrap: wrap; font-size: 0.95rem; font-weight: 500; }
+nav.top ul a { text-decoration: none; }
+.lang { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.06em; }
+.lang b { color: var(--ink); }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px; font-weight: 600; font-size: 0.95rem; text-decoration: none; border: 1px solid transparent; cursor: pointer; font-family: var(--body); line-height: 1.2; }
+.btn.primary { background: var(--brick); color: #fff; }
+.btn.ghost { border-color: var(--line); background: var(--surface); color: var(--ink); }
+.btn.small { padding: 9px 16px; font-size: 0.875rem; }
+.hero { padding-block: 56px 48px; }
+.hero .in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 48px; align-items: center; }
+.hero .copy { display: flex; flex-direction: column; gap: 22px; }
+.kicker { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brick); font-weight: 700; }
+.hero p.lede { font-size: 1.2rem; color: var(--muted); }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding-block: 14px; }
+.hero-stats b { display: block; font-family: var(--display); font-size: 1.6rem; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.hero-stats span { font-size: 0.8rem; color: var(--muted); line-height: 1.3; display: block; }
+.reader { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; display: grid; gap: 12px; }
+.reader .rh { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.reader .rh label { font-weight: 600; font-size: 0.95rem; }
+.reader .rh output { font-family: var(--display); font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.reader .rh output small { font-family: var(--body); font-size: 0.85rem; color: var(--muted); font-weight: 500; margin-left: 8px; }
+.reader input[type=range] { width: 100%; accent-color: var(--brick); }
+.reader .out { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+.reader .out b { display: block; font-family: var(--display); font-size: 1.25rem; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.reader .out span { font-size: 0.78rem; color: var(--muted); line-height: 1.3; display: block; }
+.reader .what { font-size: 0.95rem; margin: 0; }
+.reader .what strong { color: var(--moss); }
+.reader .fine { font-size: 0.72rem; color: var(--muted); margin: 0; }
+@media (max-width: 640px) { .reader .out { grid-template-columns: 1fr 1fr; } }
+h1 em { font-style: italic; }
+.trust { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 0.85rem; color: var(--muted); }
+.trust span::before { content: "✓ "; color: var(--moss); font-weight: 700; }
+.photo { aspect-ratio: 4/5; max-width: 100%; border-radius: 18px; background: var(--moss-soft); position: relative; overflow: hidden; display: flex; align-items: flex-end; }
+.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 55% 15%; }
+.photo .cap { position: relative; margin: 18px; background: var(--surface); border-radius: 10px; padding: 10px 14px; font-size: 0.85rem; color: var(--muted); }
+.photo .cap b { color: var(--ink); display: block; }
+section.block { padding-block: 64px; }
+section.alt { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.head p { color: var(--muted); font-size: 1.05rem; }
+/* Üç yol: sekmeler */
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tab { font: inherit; font-weight: 600; font-size: 0.95rem; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.panel { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 32px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
+.panel .lead { display: flex; flex-direction: column; gap: 14px; }
+.panel .lead p { color: var(--muted); }
+.steps { display: flex; flex-direction: column; gap: 0; border-left: 2px solid var(--line); margin-left: 8px; }
+.step { position: relative; padding: 0 0 18px 22px; }
+.step::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--brick); }
+.step b { display: block; font-weight: 700; }
+.step span { font-size: 0.92rem; color: var(--muted); display: block; }
+.step .t { font-family: var(--display); font-style: italic; color: var(--moss); font-size: 0.95rem; }
+.check { background: var(--moss-soft); border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; align-self: start; }
+.check h4 { color: var(--moss); letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.78rem; }
+.check ul { margin: 0; padding-left: 1.1em; font-size: 0.95rem; display: flex; flex-direction: column; gap: 4px; }
+.story .in { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 48px; align-items: start; }
+.story blockquote { margin: 0; font-family: var(--display); font-size: clamp(1.4rem, 2.6vw, 2rem); line-height: 1.3; font-style: italic; }
+.story .text { display: flex; flex-direction: column; gap: 14px; }
+.story img { width: 100%; max-width: 360px; border-radius: 14px; aspect-ratio: 4/5; object-fit: cover; object-position: top; }
+.calc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.calc form { display: flex; flex-direction: column; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+.calc label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 0.9rem; }
+.calc input, .calc select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.calc .row { display: flex; gap: 10px; flex-wrap: wrap; }
+.calc .row label { flex: 1 1 140px; }
+.result { display: flex; flex-direction: column; gap: 10px; }
+.result .big { font-family: var(--display); font-size: clamp(2.2rem, 5vw, 3.4rem); font-variant-numeric: tabular-nums; line-height: 1; }
+.result table { border-collapse: collapse; width: 100%; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+.result td { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.result td:last-child { text-align: right; font-weight: 600; }
+.result .fine { font-size: 0.8rem; color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.card .img { aspect-ratio: 16/10; background: var(--moss-soft); }
+.card .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card .body { padding: 18px; display: flex; flex-direction: column; gap: 6px; }
+.card .meta { font-size: 0.85rem; color: var(--muted); }
+.card .tag { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--moss); font-weight: 700; }
+.card .facts { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.85rem; margin-top: 4px; }
+.card .facts span b { display: block; font-family: var(--display); font-size: 1.15rem; font-weight: 600; }
+/* Rehberler: bilgi ekranları */
+.guides { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.guide { text-align: left; font: inherit; color: inherit; padding: 20px 22px; border: 1px solid var(--line); border-left: 3px solid var(--brick); background: var(--surface); border-radius: 0 12px 12px 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; cursor: pointer; }
+.guide[aria-expanded="true"] { border-color: var(--brick); background: var(--brick-soft); }
+.guide p { font-size: 0.95rem; color: var(--muted); }
+.guide span { font-size: 0.8rem; color: var(--muted); }
+.guide .open { font-weight: 600; font-size: 0.95rem; color: var(--moss); margin-top: auto; }
+.screen { margin-top: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+.screen .qa { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.screen .qa b { font-weight: 700; }
+.screen .qa p { font-size: 0.95rem; color: var(--muted); }
+.screen .qa .num { font-family: var(--display); font-size: 1.6rem; color: var(--brick); line-height: 1; }
+.screen .foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 16px; font-size: 0.9rem; color: var(--muted); }
+.quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.quote { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 10px; font-size: 0.98rem; min-width: 0; }
+.quote .who { font-size: 0.85rem; color: var(--muted); }
+.event { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; background: var(--moss); color: #fff; border-radius: 18px; padding: 28px 32px; }
+.event h3 { color: #fff; font-size: 1.5rem; }
+.event p { color: rgba(255,255,255,0.8); }
+.event .btn { background: #fff; color: var(--moss); }
+.event .kicker { color: rgba(255,255,255,0.7); }
+footer { padding-block: 40px 60px; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--muted); }
+footer .in { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+footer b { color: var(--ink); display: block; margin-bottom: 6px; }
+footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+footer .logo { width: 150px; display: block; margin-bottom: 12px; filter: var(--logo-filter); }
+.wa { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 25; }
+@media (max-width: 800px) {
+  .hero .in, .story .in, .calc, .event, .panel { grid-template-columns: minmax(0, 1fr); }
+  .hero { padding-block: 32px; }
+  nav.top ul { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) { .btn { transition: transform 0.15s ease; } .btn:hover { transform: translateY(-1px); } }
+
+.lang button { background: none; border: 0; padding: 0; font: inherit; color: var(--muted); cursor: pointer; letter-spacing: inherit; } .lang button[aria-pressed=true] { color: var(--ink); font-weight: 700; }
+
+.modal { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(23,33,43,.55); backdrop-filter: blur(3px); }
+.modal.open { display: flex; }
+.modal .box { background: var(--surface); color: var(--ink); border-radius: 18px; width: min(560px, 100%); max-height: 92vh; overflow: auto; padding: 26px 26px 22px; position: relative; box-shadow: 0 30px 80px rgba(0,0,0,.3); }
+.modal h3 { margin: 0 0 4px; font-family: var(--display); font-size: 1.6rem; font-weight: 600; }
+.modal .sub { margin: 0 0 18px; color: var(--muted); font-size: 0.92rem; }
+.modal form { display: grid; gap: 12px; }
+.modal label { display: grid; gap: 6px; font-size: 0.85rem; font-weight: 600; }
+.modal input, .modal select, .modal textarea { font: inherit; font-size: 1rem; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.modal textarea { min-height: 70px; resize: vertical; }
+.modal .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal .x { position: absolute; top: 12px; right: 14px; background: none; border: 0; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--muted); }
+.modal .done { display: none; text-align: center; padding: 10px 0; }
+.modal .done .ok { width: 54px; height: 54px; border-radius: 50%; background: var(--moss); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 12px; }
+.modal.sent form, .modal.sent > .box > .sub, .modal.sent #rv-h { display: none; } .modal.sent .done { display: block; }
+.modal .alt { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+@media (max-width: 520px) { .modal .row { grid-template-columns: 1fr; } .modal .box { padding: 22px 18px; } }
+footer a { color: inherit; }
+</style>
+
+<div class="demo-bar band"><div class="in"><b>Demo</b> <span>Tasarım ve içerik önerisi · Ekim 2026 · Versiyon B (hareketsiz)</span></div></div>
+
+<nav class="top band"><div class="in">
+  <a class="brand" href="#top"><span class="mark">ATLAS</span><span class="who">Real Estate London</span></a>
+  <ul>
+    <li><a href="#yollar">Nasıl çalışırız</a></li>
+    <li><a href="#hikaye">Helin Özçelik</a></li>
+    <li><a href="#projeler">Projeler</a></li>
+    <li><a href="#rehber">Rehberler</a></li>
+    <li><a href="#iletisim">İletişim</a></li>
+  </ul>
+  <div style="display:flex;gap:12px;align-items:center"><span class="lang" role="group" aria-label="Dil / Language"><button type="button" data-lang="tr" aria-pressed="true">TR</button> · <button type="button" data-lang="en" aria-pressed="false">EN</button></span><a class="btn primary small" href="#iletisim" data-konu="tasinma">Görüşme ayarlayın</a></div>
+</div></nav>
+
+<header class="hero band" id="top"><div class="in">
+  <div class="copy">
+    <span class="kicker">Satın alma · Kiralama · Yerleşme</span>
+    <h1>Bütçenizi söyleyin.<br><em style="color:var(--brick)">Londra'yı sizin için okuyalım.</em></h1>
+    <p class="lede">Bölgeyi, projeyi, vergiyi ve kirayı baştan hesaplarız; size rakamlarıyla iki üç seçenek getiririz. Süreci Londra'dan Helin Özçelik yürütür; kararı siz verirsiniz.</p>
+    <div class="reader" id="okuyucu">
+      <div class="rh"><label for="butce">Londra bütçeniz</label><output id="r-gbp">£450.000<small id="r-try">≈ ₺26,8 milyon</small></output></div>
+      <input type="range" id="butce" min="250000" max="1500000" step="10000" value="450000" aria-label="Londra bütçeniz, sterlin">
+      <p class="what" id="r-what"></p>
+      <div class="out"><div><b id="r-sdlt">£—</b><span>Damga vergisi, yurt dışından alana</span></div><div><b id="r-rent">£—</b><span>Tahmini aylık kira</span></div><div><b id="r-2005">£—</b><span>Aynı ev 2005'te</span></div></div>
+      <p class="fine">Demo hesabı. Kur 59,5 ₺/£; brüt kira getirisi %4,6; 2026 SDLT oranları. Görüşmede sizin rakamlarınızla yeniden hesaplarız.</p>
+    </div>
+    <div class="ctas"><a class="btn primary" href="#iletisim" data-konu="tasinma">15 dakikalık görüşme ayarlayın</a><a class="btn ghost" href="#yollar">Hangi adımdasınız?</a></div>
+    <div class="trust"><span>Property Redress Scheme üyesi</span><span>Berkeley, London Square, Latimer, Mount Anvil projeleri</span><span>Londra'da ofis, İstanbul ve Bodrum'da buluşmalar</span></div>
+  </div>
+  <div class="photo"><img src="img/helin-portre.jpg" alt="Helin Özçelik"><div class="cap"><b>Helin Özçelik</b>Kurucu, Atlas Real Estate London</div></div>
+</div></header>
+
+<section class="block band" id="yollar"><div class="in">
+  <div class="head"><span class="kicker">Nasıl çalışırız</span><h2>Hangi adımdasınız?</h2><p>İlk görüşme 15 dakika. Bir hafta içinde rakamlarıyla iki üç seçenek gelir; kararı siz verirsiniz.</p></div>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-tasinma" aria-selected="true" aria-controls="panel-tasinma">Londra'ya taşınıyorum</button>
+    <button class="tab" role="tab" id="tab-yatirim" aria-selected="false" aria-controls="panel-yatirim">Yatırım yapıyorum</button>
+    <button class="tab" role="tab" id="tab-ogrenci" aria-selected="false" aria-controls="panel-ogrenci">Çocuğum Londra'da okuyacak</button>
+  </div>
+  <div class="panel" id="panel-tasinma" role="tabpanel">
+    <div class="lead"><h3>Bölge, okul, sözleşme ve taşınma günü tek takvimde.</h3><p>Bütçenize ve okul tercihinize göre üç bölge öneririz, kira başvurusunu Londra'dan biz yürütürüz. Taşındıktan sonraki ilk ayda banka, fatura ve kayıt işleri de bizim takvimimizde.</p>
+      <div class="steps">
+        <div class="step"><b>1. görüşme</b><span>Bütçe, okul, iş yeri, taşınma tarihi.</span><span class="t">15 dakika</span></div>
+        <div class="step"><b>Bölge kısa listesi</b><span>Üç bölge, her biri için kira aralığı, okul ve ulaşım notu.</span><span class="t">3 iş günü</span></div>
+        <div class="step"><b>Ev turu</b><span>Seçtiğiniz evleri yerinde gezer, videoyla gösteririz.</span><span class="t">1 hafta</span></div>
+        <div class="step"><b>Başvuru ve sözleşme</b><span>Referans, garantör ve depozito işlemleri bizden; imza sizden.</span><span class="t">5-10 iş günü</span></div>
+        <div class="step"><b>İlk 30 gün</b><span>Banka hesabı, council tax, elektrik ve internet kayıtları.</span><span class="t">Taşınma sonrası</span></div>
+      </div></div>
+    <div class="check"><h4>Hazırlamanız gerekenler</h4><ul><li>Pasaport ve vize sayfası</li><li>Son 3 ay gelir belgesi ya da garantör</li><li>Bir önceki ev sahibinden referans (varsa)</li><li>5 haftalık kira tutarında depozito</li></ul><a class="btn primary small" href="#iletisim" data-konu="tasinma" style="align-self:flex-start;margin-top:6px">Taşınma görüşmesi ayarlayın</a></div>
+  </div>
+  <div class="panel" id="panel-yatirim" role="tabpanel" hidden>
+    <div class="lead"><h3>Sterlinle kira geliri, vergisi hesaplanmış, kiracısı bulunmuş.</h3><p>Yalnızca Türk ailelerin yaşadığı ve kiraya verebildiği bölgelerde çalışırız. Her seçenek için fiyat, damga vergisi, tahmini kira, hizmet bedeli ve teslim tarihi tek sayfada gelir.</p>
+      <div class="steps">
+        <div class="step"><b>1. görüşme</b><span>Bütçe, hedef getiri, vade, Londra'ya geliş planı.</span><span class="t">15 dakika</span></div>
+        <div class="step"><b>Kısa liste</b><span>İki üç proje, her biri için net rakam tablosu.</span><span class="t">1 hafta</span></div>
+        <div class="step"><b>Rezervasyon</b><span>Rezervasyon bedeli, avukat seçimi, kimlik ve kaynak belgeleri.</span><span class="t">2 hafta</span></div>
+        <div class="step"><b>Sözleşme ve ödeme planı</b><span>%10 peşinat, teslime kadar taksitler, gerekiyorsa kredi başvurusu.</span><span class="t">4-6 hafta</span></div>
+        <div class="step"><b>Teslim ve kiralama</b><span>Teslimde kontrol, mobilya paketi, kiracı bulma ve yönetim.</span><span class="t">Teslim ayı</span></div>
+      </div></div>
+    <div class="check"><h4>Önce şunu hesaplayın</h4><ul><li>Damga vergisi: aşağıdaki hesaplayıcıyla iki dakikada</li><li>Yıllık hizmet bedeli ve ground rent</li><li>Kira gelirinin İngiltere'de vergilendirilmesi</li><li>Kur: sterlin bazlı gelir, lira bazlı bütçe</li></ul><a class="btn primary small" href="#hesap" style="align-self:flex-start;margin-top:6px">Vergiyi hesaplayın</a></div>
+  </div>
+  <div class="panel" id="panel-ogrenci" role="tabpanel" hidden>
+    <div class="lead"><h3>Kampüse yakın, güvenli, bütçeye uygun. Kiralık ya da dört yıl sonra satılacak bir ev.</h3><p>Üniversiteye göre bölge öneririz, öğrenci sözleşmesi ve garantör çözümünü biz kurarız. İsterseniz dört yıllık kira toplamı ile satın alma senaryosunu yan yana hesaplarız.</p>
+      <div class="steps">
+        <div class="step"><b>1. görüşme</b><span>Üniversite, kampüs, bütçe, kirala/al tercihi.</span><span class="t">15 dakika</span></div>
+        <div class="step"><b>Bölge ve ev kısa listesi</b><span>Kampüse 15 dakika içinde üç seçenek, güvenlik ve ulaşım notuyla.</span><span class="t">3 iş günü</span></div>
+        <div class="step"><b>Garantör ve sözleşme</b><span>Türkiye'deki aile için garantör hizmeti ya da peşin kira seçeneği.</span><span class="t">1 hafta</span></div>
+        <div class="step"><b>Yerleşme</b><span>Teslim, eşya, internet, kayıt; öğrenci Londra'ya geldiğinde ev hazır.</span><span class="t">Dönem başı</span></div>
+      </div></div>
+    <div class="check"><h4>Ailelerin en çok sorduğu</h4><ul><li>Garantörü olmayan öğrenci nasıl kiralar?</li><li>Kampüse 12 dakika mı, 25 dakika mı?</li><li>Dört yılda kira mı, satın alma mı kazandırır?</li><li>Ev arkadaşıyla ortak sözleşme nasıl olur?</li></ul><a class="btn primary small" href="#iletisim" data-konu="ogrenci" style="align-self:flex-start;margin-top:6px">Öğrenci görüşmesi ayarlayın</a></div>
+  </div>
+</div></section>
+
+<section class="block band story alt" id="hikaye"><div class="in">
+  <div style="display:flex;flex-direction:column;gap:18px"><blockquote>"Arkadaşlarım bana İngiliz Anahtarı der. Her kilidin bir ölçüsü var; ben ölçerim."</blockquote><img src="img/mag.jpg" alt="Helin Özçelik">
+    <div class="facts" style="display:flex;gap:28px;flex-wrap:wrap"><span><b style="font-family:var(--display);font-size:2.2rem;font-weight:600;display:block;line-height:1">45+</b><span style="font-size:0.85rem;color:var(--muted)">tamamlanan proje</span></span><span><b style="font-family:var(--display);font-size:2.2rem;font-weight:600;display:block;line-height:1">75+</b><span style="font-size:0.85rem;color:var(--muted)">aile ve yatırımcı</span></span><span><b style="font-family:var(--display);font-size:2.2rem;font-weight:600;display:block;line-height:1">3 ülke</b><span style="font-size:0.85rem;color:var(--muted)">Türkiye, ABD, Birleşik Krallık</span></span></div>
+  </div>
+  <div class="text">
+    <span class="kicker">Helin Özçelik</span>
+    <p>Ölçmeyi meslek edindim: Chicago'da psikometri ve istatistik yüksek lisansı, ODTÜ'de eğitim fakültesi, London School of Economics'te gayrimenkul ekonomisi ve finansı. Londra'da gayrimenkule bu alışkanlıkla girdim. Bir ev için "güzel" demem; kirasını, vergisini, teslim tarihini ve beş yıl sonraki değerini söylerim.</p>
+    <p>Çalışma biçimim nettir. İlk görüşmede hedefi ve bütçeyi konuşuruz. Bir hafta içinde kısa liste gelir: fiyat, vergi, tahmini kira, teslim tarihi, hizmet bedeli. Londra'ya gelmeniz gerekmez; her evi sizin için gezer, videoyla gösteririm. Kararı siz verirsiniz, sözleşmeden teslime kadar süreci ben yürütürüm.</p>
+    <p>Bugüne kadar 45'ten fazla projede, 75'ten fazla aile ve yatırımcıyla çalıştım. Yalnız değilim: kiralama ve yönetimi yürüten ekip arkadaşım, Türkiye'deki buluşmalarımızı düzenleyen arkadaşım, Londra'daki avukat, kredi danışmanı ve vergi uzmanlarıyla birlikteyiz. Sizin tarafınızda tek bir muhatap olur.</p>
+    <p><a class="btn ghost" href="#iletisim" data-konu="yatirim" style="margin-top:6px">Helin'le görüşme ayarlayın</a></p>
+  </div>
+</div></section>
+
+<section class="block band" id="hesap"><div class="in">
+  <div class="head"><span class="kicker">Rakamı baştan söyleriz</span><h2>Yurt dışından alan biri Londra'da ne kadar damga vergisi öder?</h2><p>2026 oranlarıyla iki dakikada hesaplayın. Türkiye'de yaşayıp Londra'da ikinci bir ev alanlar için iki ek oran uygulanır; ilk görüşmede bunu birlikte netleştiririz.</p></div>
+  <div class="calc">
+    <form id="sdlt" onsubmit="return false">
+      <label>Satın alma fiyatı (£)<input id="price" type="number" min="0" step="1000" value="500000"></label>
+      <div class="row">
+        <label>İngiltere'de oturuyor musunuz?<select id="res"><option value="nr">Hayır, yurt dışında yaşıyorum (+%2)</option><option value="r">Evet, yılda 183 günden fazla</option></select></label>
+        <label>Başka bir eviniz var mı?<select id="add"><option value="y">Evet, dünyanın herhangi bir yerinde (+%5)</option><option value="n">Hayır, ilk ve tek evim</option></select></label>
+      </div>
+      <button class="btn primary" type="button" id="go">Hesapla</button>
+    </form>
+    <div class="result">
+      <span class="kicker">Tahmini damga vergisi (SDLT)</span>
+      <div class="big" id="total">£50.000</div>
+      <table id="rows"></table>
+      <span class="fine">İngiltere ve Kuzey İrlanda konut SDLT dilimleri (1 Nisan 2025'ten itibaren) ve ek oranlarla hesaplanır. Bilgi amaçlıdır; kesin tutarı işlem öncesi avukatınız verir.</span>
+      <a class="btn ghost" href="#iletisim" data-konu="vergi" style="align-self:flex-start">Bu rakamı Helin'le konuşun</a>
+    </div>
+  </div>
+</div></section>
+
+<section class="block band alt" id="projeler"><div class="in">
+  <div class="head"><span class="kicker">Seçilmiş projeler</span><h2>Londra'da yüzlerce proje var. Biz birkaçıyla çalışırız.</h2><p>Türk ailelerin yaşadığı ve kiraya verebildiği bölgelerde, teslim tarihi ve hizmet bedeli net projeler. Fiyat listesi, kat planı ve tahmini kira getirisi görüşmede.</p></div>
+  <div class="cards">
+    <div class="card"><div class="img"><img src="img/london-dock.jpg" alt="London Dock"></div><div class="body"><span class="tag">Wapping · Zone 1-2</span><h3>London Dock</h3><span class="meta">1-3 yatak odalı · Tower Bridge'e yürüme mesafesi</span><div class="facts"><span><b>12 dk</b>City'ye</span><span><b>Yüksek</b>kiracı talebi</span></div></div></div>
+    <div class="card"><div class="img"><img src="img/bow-green.jpg" alt="Bow Green"></div><div class="body"><span class="tag">Bow · Doğu Londra</span><h3>Bow Green</h3><span class="meta">Stüdyo, 1, 2 ve 3 yatak odalı · Yeni etap</span><div class="facts"><span><b>10 dk</b>Canary Wharf'a</span><span><b>Giriş</b>seviyesi yatırım</span></div></div></div>
+    <div class="card"><div class="img"><img src="img/royal-arsenal.jpg" alt="Royal Arsenal Riverside"></div><div class="body"><span class="tag">Woolwich · Nehir kıyısı</span><h3>Royal Arsenal Riverside</h3><span class="meta">1, 2 ve 3 yatak odalı · Elizabeth Line</span><div class="facts"><span><b>20 dk</b>City'ye</span><span><b>Aile</b>ve öğrenci</span></div></div></div>
+  </div>
+</div></section>
+
+<section class="block band" id="rehber"><div class="in">
+  <div class="head"><span class="kicker">Rehberler</span><h2>Her görüşmede sorulan sorular, yazılı cevaplarıyla.</h2><p>Bir başlığa dokunun; cevaplar açılır. Bize yalnızca sizin durumunuza özel olanı sorun.</p></div>
+  <div class="guides">
+    <button class="guide" aria-expanded="true" aria-controls="s-kira"><h3>Londra'da ev kiralama</h3><p>Referans, depozito, garantör ve 1 Mayıs 2026'da değişen kiracı hakları.</p><span>4 soru · Güncel: Ekim 2026</span><span class="open">Cevapları açın →</span></button>
+    <button class="guide" aria-expanded="false" aria-controls="s-newbuild"><h3>Yeni projeden alırken</h3><p>Teslim tarihi, hizmet bedeli, kira garantisi vaatleri ve avukat seçimi.</p><span>4 soru</span><span class="open">Cevapları açın →</span></button>
+    <button class="guide" aria-expanded="false" aria-controls="s-evsahibi"><h3>Türkiye'den ev sahibi olmak</h3><p>Non-Resident Landlord kaydı, kira gelirinin vergisi, yönetim.</p><span>4 soru</span><span class="open">Cevapları açın →</span></button>
+    <button class="guide" aria-expanded="false" aria-controls="s-ogrenci"><h3>Çocuğunuz için: kirala mı, al mı?</h3><p>Dört yıllık toplam maliyet, iki senaryo yan yana.</p><span>4 soru · Hesap dahil</span><span class="open">Cevapları açın →</span></button>
+  </div>
+  <div class="screen" id="s-kira">
+    <div class="qa"><span class="num">5 hafta</span><b>Depozito ne kadar?</b><p>Yıllık kirası £50.000'in altındaki evlerde en fazla 5 haftalık kira. Ayrıca 1 haftalık rezervasyon depozitosu istenebilir; sözleşmede kiradan düşülür.</p></div>
+    <div class="qa"><span class="num">1 Mayıs 2026</span><b>Yeni kiracı hakları ne getirdi?</b><p>Sabit süreli sözleşmeler kalktı, sözleşmeler süresiz; ev sahibi gerekçesiz çıkaramaz. Kira artışı yılda bir ve itiraz edilebilir. Peşin kira en fazla bir ay.</p></div>
+    <div class="qa"><span class="num">3 yol</span><b>Türkiye'den gelir belgem geçer mi?</b><p>Üç seçenek: İngiltere'de garantör, garantör hizmeti (yıllık kiranın yüzde birkaçı) ya da 6-12 aylık peşin ödeme. Hangisinin uygun olduğunu ilk görüşmede belirleriz.</p></div>
+    <div class="qa"><span class="num">5-10 gün</span><b>Başvurudan anahtara ne kadar sürer?</b><p>Referans kontrolü, sözleşme ve depozito kaydı için 5-10 iş günü. Boş eve taşınmada bu süre 3 güne iner.</p></div>
+    <div class="foot"><span>Bu bilgiler Ekim 2026 itibarıyla geçerlidir; sözleşme öncesi güncel halini birlikte kontrol ederiz.</span><a class="btn primary small" href="#iletisim" data-konu="kira">Kiralama görüşmesi ayarlayın</a></div>
+  </div>
+  <div class="screen" id="s-newbuild" hidden>
+    <div class="qa"><span class="num">%10</span><b>Peşinat ne zaman ödenir?</b><p>Sözleşme imzasında genellikle %10; bazı projelerde teslime kadar ek %5-10. Kalan tutar teslimde, nakit ya da krediyle.</p></div>
+    <div class="qa"><span class="num">6 ay önce</span><b>Kredi için ne zaman başvurulur?</b><p>Teslimden yaklaşık 6 ay önce. Yurt dışında yaşayanlar için kredi veren bankalar vardır; faiz ve peşinat şartları farklıdır, görüşmede anlatırız.</p></div>
+    <div class="qa"><span class="num">£3-6 / ft²</span><b>Hizmet bedeli ne kadar?</b><p>Yıllık hizmet bedeli projeye göre değişir; kapıcı, havuz ve spor salonu bedeli artırır. Her kısa listede bu rakam yazılıdır.</p></div>
+    <div class="qa"><span class="num">Sizin avukatınız</span><b>Avukatı kim seçer?</b><p>Siz. Geliştiricinin önerdiği avukat yerine yurt dışı alıcı deneyimi olan bağımsız bir avukatla çalışırız; listemizdeki üç avukatı tanıştırırız.</p></div>
+    <div class="foot"><span>Teslim tarihi, kat planı ve kira getirisi projeye göre değişir; görüşmede proje bazında paylaşırız.</span><a class="btn primary small" href="#iletisim" data-konu="yatirim">Yatırım görüşmesi ayarlayın</a></div>
+  </div>
+  <div class="screen" id="s-evsahibi" hidden>
+    <div class="qa"><span class="num">NRL</span><b>Non-Resident Landlord kaydı nedir?</b><p>Yurt dışında yaşayan ev sahibi için HMRC kaydı. Kayıt yapılırsa kira brüt ödenir, vergi yıl sonunda beyanla ödenir. Başvuruyu avukat ya da muhasebeciyle birlikte yaparız.</p></div>
+    <div class="qa"><span class="num">£12.570</span><b>Kira gelirinde vergi var mı?</b><p>İngiltere'de kişisel muafiyet sınırı yıllık £12.570; üstü dilimli vergilenir. Türkiye ile çifte vergilendirme anlaşması vardır; muhasebeciniz iki ülkeyi birlikte planlar.</p></div>
+    <div class="qa"><span class="num">%10-15</span><b>Yönetim ne kadar?</b><p>Kiracı bulma ve tam yönetim için kiranın yaklaşık %10-15'i. Tahsilat, bakım, kontrol ve yıllık raporlama buna dahildir.</p></div>
+    <div class="qa"><span class="num">Uzaktan</span><b>Kiracıyla hiç muhatap olur muyum?</b><p>Olmazsınız. Sözleşme, tahsilat ve arıza çağrıları yönetim ekibindedir; siz aylık raporu görürsünüz.</p></div>
+    <div class="foot"><span>Vergi rakamları 2026-27 dönemi içindir; beyan öncesi muhasebecinizle doğrularız.</span><a class="btn primary small" href="#iletisim" data-konu="evsahibi">Ev sahibi görüşmesi ayarlayın</a></div>
+  </div>
+  <div class="screen" id="s-ogrenci" hidden>
+    <div class="qa"><span class="num">4 yıl</span><b>Kiralamanın toplam maliyeti ne?</b><p>Kampüse 15 dakikalık bir stüdyo için aylık £1.700-2.200; dört yılda £80-105 bin. Buna depozito ve her yıl yeniden ev arama dahil değildir.</p></div>
+    <div class="qa"><span class="num">4 yıl</span><b>Satın alıp satmanın maliyeti ne?</b><p>£400 bin'lik bir dairede damga vergisi, avukat ve satış masrafı toplam £35-45 bin; karşılığında dört yıl kira ödenmez ve değer artışı sizde kalır. Bölgeye göre hesaplarız.</p></div>
+    <div class="qa"><span class="num">12 dk</span><b>Kampüse ne kadar yakın olmalı?</b><p>Londra'da 12-15 dakika yürüme ya da tek hat metro idealdir. Daha yakını fiyatı, daha uzağı güvenlik ve zaman maliyetini artırır.</p></div>
+    <div class="qa"><span class="num">Mezuniyet</span><b>Sonra ne olur?</b><p>Ev ya kiraya verilir ya satılır. İkinci senaryoda satış sürecini biz yürütürüz; bu yüzden alırken "sonra kime kiralanır" sorusunu da cevaplarız.</p></div>
+    <div class="foot"><span>Rakamlar Ekim 2026 piyasa aralıklarıdır; sizin bütçenizle iki senaryoyu birlikte hesaplarız.</span><a class="btn primary small" href="#iletisim" data-konu="ogrenci">Öğrenci görüşmesi ayarlayın</a></div>
+  </div>
+</div></section>
+
+<section class="block band alt"><div class="in">
+  <div class="head"><span class="kicker">Müşterilerimiz anlatıyor</span><h2>Üç aile, üç karar</h2><p>Taşınan, yatırım yapan ve çocuğunu okutan ailelerden.</p></div>
+  <div class="quotes">
+    <div class="quote"><p>"Okul ve ev aynı anda nasıl olacak diye başlamıştık. Üç haftada ikisi de hazırdı; taşındıktan sonra da aradığımızda açtılar."</p><span class="who">— Z. ve M. ailesi, Chiswick</span></div>
+    <div class="quote"><p>"Daireyi görmeden aldım. Her oda videoyla gezildi, vergi ve hizmet bedeli önceden yazıldı. Kiracı ben Londra'ya gelmeden bulundu."</p><span class="who">— E. B., Bow Green'de 1+1</span></div>
+    <div class="quote"><p>"Oğlum UCL'e başlarken ben Ankara'daydım. Kampüse 12 dakika, güvenli bir bölge, garantör sorunu çözülmüş."</p><span class="who">— S. K., King's Cross</span></div>
+  </div>
+  <p style="font-size:0.85rem;color:var(--muted);margin-top:16px">Müşteri sözleri izinle ve ilk adla yayınlanır.</p>
+</div></section>
+
+<section class="block band"><div class="in">
+  <div class="event"><div><span class="kicker">Türkiye'de buluşalım</span><h3>Londra projelerini İstanbul'da, yüz yüze.</h3><p>Yılda birkaç kez İstanbul ve Bodrum'da proje sunumu yapıyor, sorularınızı birebir cevaplıyoruz. Yeni tarih açıklandığında ilk siz öğrenin.</p></div><a class="btn" href="#iletisim" data-konu="etkinlik">Haber verin</a></div>
+</div></section>
+
+<footer class="band" id="iletisim"><div class="in">
+  <div><img class="logo" src="img/logo.png" alt="Atlas Real Estate London"><b>Atlas Real Estate London</b><ul><li>Helin Özçelik, Kurucu</li><li><a href="https://wa.me/447493099830" target="_blank" rel="noopener">WhatsApp: +44 7493 099830</a></li><li><a href="mailto:helin@atlasrealestatelondon.com">helin@atlasrealestatelondon.com</a></li><li><a href="https://maps.google.com/?q=Richmond+TW10+6LR" target="_blank" rel="noopener">Richmond, Londra</a></li></ul></div>
+  <div><b>Güvence</b><ul><li>Property Redress Scheme üyesi</li><li>Client Money Protection kapsamında</li><li>HMRC kayıtlı emlak acentesi</li><li>ICO veri koruma kaydı</li></ul></div>
+  <div><b>Takip edin</b><ul><li><a href="https://www.instagram.com/atlasrealestatelondon/" target="_blank" rel="noopener">Instagram @atlasrealestatelondon</a></li><li><a href="https://www.linkedin.com/search/results/all/?keywords=Atlas%20Real%20Estate%20London" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="#iletisim" data-konu="bulten">Aylık Türkçe bülten: Londra Notları</a></li></ul></div>
+  <div><b>Çalışma saatleri</b><ul><li>Pazartesi–Cuma 9:00–18:00 (Londra)</li><li>WhatsApp mesajlarına aynı gün dönüş</li><li>Türkiye saatiyle akşam görüşmeleri mümkün</li></ul></div>
+</div></footer>
+
+<a class="btn primary wa" href="https://wa.me/447493099830" target="_blank" rel="noopener">WhatsApp</a>
+<div class="modal" id="randevu" role="dialog" aria-modal="true" aria-labelledby="rv-h">
+  <div class="box">
+    <button class="x" type="button" data-close aria-label="Kapat">×</button>
+    <h3 id="rv-h">Görüşme ayarlayın</h3>
+    <p class="sub">Gönderince WhatsApp açılır; mesaj hazır gelir, siz yalnızca gönderirsiniz. Aynı gün dönüş.</p>
+    <form id="rv-form" novalidate>
+      <div class="row">
+        <label>Adınız<input name="ad" required autocomplete="name"></label>
+        <label>Telefon ya da WhatsApp<input name="tel" type="tel" required autocomplete="tel"></label>
+      </div>
+      <div class="row">
+        <label>Konu<select name="konu"><option>Londra'ya taşınma</option><option>Yatırım</option><option>Öğrenci evi</option><option>Kiralama</option><option>Türkiye'den ev sahibi olmak</option><option>Damga vergisi hesabım</option><option>İstanbul / Bodrum buluşması</option><option>Aylık bülten</option></select></label>
+        <label>Size uygun zaman<select name="zaman"><option>Hafta içi gündüz (Londra saati)</option><option>Hafta içi akşam (Türkiye saati)</option><option>Hafta sonu</option></select></label>
+      </div>
+      <label>Kısa not (isteğe bağlı)<textarea name="not"></textarea></label>
+      <div class="ctas"><button class="btn primary" type="submit">WhatsApp'tan gönderin</button><button class="btn ghost" type="button" data-mail>E-posta ile gönderin</button></div>
+    </form>
+    <div class="done">
+      <div class="ok">✓</div>
+      <h3>Mesajınız hazır.</h3>
+      <p class="sub">WhatsApp yeni sekmede açıldı. Açılmadıysa aşağıdaki düğmeye dokunun. 15 dakikalık görüşme için aynı gün dönüş yaparız.</p>
+      <div class="alt"><a class="btn primary" id="rv-wa" href="#" target="_blank" rel="noopener">WhatsApp'ı açın</a><button class="btn ghost" type="button" data-close>Kapat</button></div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Dil / Language
+  var EN={"Demo": "Demo", "Tasarım ve içerik önerisi · Ekim 2026 · Versiyon A (hareketli)": "Design and content proposal · October 2026 · Version A (with motion)", "Tasarım ve içerik önerisi · Ekim 2026 · Versiyon B (hareketsiz)": "Design and content proposal · October 2026 · Version B (no motion)", "Nasıl çalışırız": "How we work", "Projeler": "Developments", "Rehberler": "Guides", "İletişim": "Contact", "Görüşme ayarlayın": "Book a call", "Satın alma · Kiralama · Yerleşme": "Buying · Renting · Settling in", "Bütçenizi söyleyin.": "Tell us your budget.", "Londra'yı sizin için okuyalım.": "We'll read London for you.", "Bölgeyi, projeyi, vergiyi ve kirayı baştan hesaplarız; size rakamlarıyla iki üç seçenek getiririz. Süreci Londra'dan Helin Özçelik yürütür; kararı siz verirsiniz.": "We work out the area, the development, the tax and the rent up front, then bring you two or three options with the numbers attached. Helin Özçelik runs the process from London; the decision is yours.", "Londra bütçeniz": "Your London budget", "Damga vergisi, yurt dışından alana": "Stamp duty for an overseas buyer", "Tahmini aylık kira": "Estimated monthly rent", "Aynı ev 2005'te": "Same home in 2005", "Demo hesabı. Kur 59,5 ₺/£; brüt kira getirisi %4,6; 2026 SDLT oranları. Görüşmede sizin rakamlarınızla yeniden hesaplarız.": "Demo figures. FX 59.5 ₺/£; gross yield 4.6%; 2026 SDLT rates. On the call we rerun it with your numbers.", "15 dakikalık görüşme ayarlayın": "Book a 15-minute call", "Hangi adımdasınız?": "Where are you in the process?", "Property Redress Scheme üyesi": "Property Redress Scheme member", "Berkeley, London Square, Latimer, Mount Anvil projeleri": "Berkeley, London Square, Latimer and Mount Anvil developments", "Londra'da ofis, İstanbul ve Bodrum'da buluşmalar": "Office in London, meetings in Istanbul and Bodrum", "Kurucu, Atlas Real Estate London": "Founder, Atlas Real Estate London", "İlk görüşme 15 dakika. Bir hafta içinde rakamlarıyla iki üç seçenek gelir; kararı siz verirsiniz.": "The first call takes 15 minutes. Within a week you get two or three options with the numbers; the decision is yours.", "Londra'ya taşınıyorum": "I'm moving to London", "Yatırım yapıyorum": "I'm investing", "Çocuğum Londra'da okuyacak": "My child will study in London", "Bölge, okul, sözleşme ve taşınma günü tek takvimde.": "Area, school, tenancy and moving day on one calendar.", "Bütçenize ve okul tercihinize göre üç bölge öneririz, kira başvurusunu Londra'dan biz yürütürüz. Taşındıktan sonraki ilk ayda banka, fatura ve kayıt işleri de bizim takvimimizde.": "We suggest three areas based on your budget and school choice and run the rental application from London. In your first month after moving, bank, utilities and registrations sit on our calendar too.", "1. görüşme": "First call", "Bütçe, okul, iş yeri, taşınma tarihi.": "Budget, school, workplace, moving date.", "15 dakika": "15 minutes", "Bölge kısa listesi": "Area shortlist", "Üç bölge, her biri için kira aralığı, okul ve ulaşım notu.": "Three areas, each with a rent range plus school and transport notes.", "3 iş günü": "3 working days", "Ev turu": "Viewings", "Seçtiğiniz evleri yerinde gezer, videoyla gösteririz.": "We view your chosen homes in person and show you on video.", "1 hafta": "1 week", "Başvuru ve sözleşme": "Application and tenancy", "Referans, garantör ve depozito işlemleri bizden; imza sizden.": "References, guarantor and deposit handled by us; the signature is yours.", "5-10 iş günü": "5–10 working days", "İlk 30 gün": "First 30 days", "Banka hesabı, council tax, elektrik ve internet kayıtları.": "Bank account, council tax, electricity and broadband set up.", "Taşınma sonrası": "After the move", "Hazırlamanız gerekenler": "What to have ready", "Pasaport ve vize sayfası": "Passport and visa page", "Son 3 ay gelir belgesi ya da garantör": "Last 3 months' proof of income, or a guarantor", "Bir önceki ev sahibinden referans (varsa)": "Reference from your previous landlord (if any)", "5 haftalık kira tutarında depozito": "Deposit equal to 5 weeks' rent", "Taşınma görüşmesi ayarlayın": "Book a relocation call", "Sterlinle kira geliri, vergisi hesaplanmış, kiracısı bulunmuş.": "Rental income in sterling, tax worked out, tenant found.", "Yalnızca Türk ailelerin yaşadığı ve kiraya verebildiği bölgelerde çalışırız. Her seçenek için fiyat, damga vergisi, tahmini kira, hizmet bedeli ve teslim tarihi tek sayfada gelir.": "We only work in areas where our families live and can let. Every option comes on one page: price, stamp duty, estimated rent, service charge and completion date.", "Bütçe, hedef getiri, vade, Londra'ya geliş planı.": "Budget, target return, horizon, plans to visit London.", "Kısa liste": "Shortlist", "İki üç proje, her biri için net rakam tablosu.": "Two or three developments, each with a clear table of numbers.", "Rezervasyon": "Reservation", "Rezervasyon bedeli, avukat seçimi, kimlik ve kaynak belgeleri.": "Reservation fee, choice of solicitor, ID and source-of-funds documents.", "2 hafta": "2 weeks", "Sözleşme ve ödeme planı": "Exchange and payment plan", "%10 peşinat, teslime kadar taksitler, gerekiyorsa kredi başvurusu.": "10% deposit, instalments until completion, mortgage application if needed.", "4-6 hafta": "4–6 weeks", "Teslim ve kiralama": "Completion and letting", "Teslimde kontrol, mobilya paketi, kiracı bulma ve yönetim.": "Snagging at completion, furniture pack, tenant search and management.", "Teslim ayı": "Completion month", "Önce şunu hesaplayın": "Work these out first", "Damga vergisi: aşağıdaki hesaplayıcıyla iki dakikada": "Stamp duty: two minutes with the calculator below", "Yıllık hizmet bedeli ve ground rent": "Annual service charge and ground rent", "Kira gelirinin İngiltere'de vergilendirilmesi": "UK tax on rental income", "Kur: sterlin bazlı gelir, lira bazlı bütçe": "FX: income in sterling, budget in lira", "Vergiyi hesaplayın": "Calculate the tax", "Kampüse yakın, güvenli, bütçeye uygun. Kiralık ya da dört yıl sonra satılacak bir ev.": "Close to campus, safe, within budget. A home to rent, or one to sell after four years.", "Üniversiteye göre bölge öneririz, öğrenci sözleşmesi ve garantör çözümünü biz kurarız. İsterseniz dört yıllık kira toplamı ile satın alma senaryosunu yan yana hesaplarız.": "We suggest areas by university and set up the student tenancy and guarantor solution. If you like, we put four years of rent next to a purchase scenario.", "Üniversite, kampüs, bütçe, kirala/al tercihi.": "University, campus, budget, rent-or-buy preference.", "Bölge ve ev kısa listesi": "Area and home shortlist", "Kampüse 15 dakika içinde üç seçenek, güvenlik ve ulaşım notuyla.": "Three options within 15 minutes of campus, with safety and transport notes.", "Garantör ve sözleşme": "Guarantor and tenancy", "Türkiye'deki aile için garantör hizmeti ya da peşin kira seçeneği.": "A guarantor service for families abroad, or rent paid in advance.", "Yerleşme": "Settling in", "Teslim, eşya, internet, kayıt; öğrenci Londra'ya geldiğinde ev hazır.": "Keys, furniture, broadband, registrations; the home is ready when the student lands.", "Dönem başı": "Start of term", "Ailelerin en çok sorduğu": "What families ask most", "Garantörü olmayan öğrenci nasıl kiralar?": "How does a student rent without a guarantor?", "Kampüse 12 dakika mı, 25 dakika mı?": "12 minutes to campus, or 25?", "Dört yılda kira mı, satın alma mı kazandırır?": "Over four years, does renting or buying win?", "Ev arkadaşıyla ortak sözleşme nasıl olur?": "How does a joint tenancy with a flatmate work?", "Öğrenci görüşmesi ayarlayın": "Book a student call", "\"Arkadaşlarım bana İngiliz Anahtarı der. Her kilidin bir ölçüsü var; ben ölçerim.\"": "\"My friends call me the English Key. Every lock has a measure; I measure it.\"", "tamamlanan proje": "completed projects", "aile ve yatırımcı": "families and investors", "3 ülke": "3 countries", "Türkiye, ABD, Birleşik Krallık": "Türkiye, USA, United Kingdom", "Ölçmeyi meslek edindim: Chicago'da psikometri ve istatistik yüksek lisansı, ODTÜ'de eğitim fakültesi, London School of Economics'te gayrimenkul ekonomisi ve finansı. Londra'da gayrimenkule bu alışkanlıkla girdim. Bir ev için \"güzel\" demem; kirasını, vergisini, teslim tarihini ve beş yıl sonraki değerini söylerim.": "Measuring is my profession: a master's in psychometrics and statistics in Chicago, a degree in education at METU, real estate economics and finance at the London School of Economics. I came into London property with that habit. I never call a home \"lovely\"; I tell you its rent, its tax, its completion date and its value in five years.", "Çalışma biçimim nettir. İlk görüşmede hedefi ve bütçeyi konuşuruz. Bir hafta içinde kısa liste gelir: fiyat, vergi, tahmini kira, teslim tarihi, hizmet bedeli. Londra'ya gelmeniz gerekmez; her evi sizin için gezer, videoyla gösteririm. Kararı siz verirsiniz, sözleşmeden teslime kadar süreci ben yürütürüm.": "My way of working is simple. On the first call we talk goal and budget. Within a week you get a shortlist: price, tax, estimated rent, completion date, service charge. You don't need to come to London; I view every home for you and show you on video. You decide; I run the process from exchange to completion.", "Bugüne kadar 45'ten fazla projede, 75'ten fazla aile ve yatırımcıyla çalıştım. Yalnız değilim: kiralama ve yönetimi yürüten ekip arkadaşım, Türkiye'deki buluşmalarımızı düzenleyen arkadaşım, Londra'daki avukat, kredi danışmanı ve vergi uzmanlarıyla birlikteyiz. Sizin tarafınızda tek bir muhatap olur.": "So far I have worked on more than 45 developments with more than 75 families and investors. I'm not alone: a colleague runs lettings and management, another organises our meetings in Türkiye, and we work with solicitors, mortgage brokers and tax advisers in London. On your side there is one point of contact.", "Helin'le görüşme ayarlayın": "Book a call with Helin", "Rakamı baştan söyleriz": "We say the number up front", "Yurt dışından alan biri Londra'da ne kadar damga vergisi öder?": "How much stamp duty does an overseas buyer pay in London?", "2026 oranlarıyla iki dakikada hesaplayın. Türkiye'de yaşayıp Londra'da ikinci bir ev alanlar için iki ek oran uygulanır; ilk görüşmede bunu birlikte netleştiririz.": "Work it out in two minutes at 2026 rates. Two surcharges apply if you live abroad and are buying a second home in London; we confirm them together on the first call.", "Satın alma fiyatı (£)": "Purchase price (£)", "İngiltere'de oturuyor musunuz?": "Are you UK resident?", "Hayır, yurt dışında yaşıyorum (+%2)": "No, I live abroad (+2%)", "Evet, yılda 183 günden fazla": "Yes, more than 183 days a year", "Başka bir eviniz var mı?": "Do you own another home?", "Evet, dünyanın herhangi bir yerinde (+%5)": "Yes, anywhere in the world (+5%)", "Hayır, ilk ve tek evim": "No, this is my first and only home", "Hesapla": "Calculate", "Tahmini damga vergisi (SDLT)": "Estimated stamp duty (SDLT)", "İngiltere ve Kuzey İrlanda konut SDLT dilimleri (1 Nisan 2025'ten itibaren) ve ek oranlarla hesaplanır. Bilgi amaçlıdır; kesin tutarı işlem öncesi avukatınız verir.": "Based on England and Northern Ireland residential SDLT bands (from 1 April 2025) plus surcharges. For guidance only; your solicitor confirms the exact figure before exchange.", "Bu rakamı Helin'le konuşun": "Talk this number through with Helin", "Seçilmiş projeler": "Selected developments", "Londra'da yüzlerce proje var. Biz birkaçıyla çalışırız.": "London has hundreds of developments. We work with a few.", "Türk ailelerin yaşadığı ve kiraya verebildiği bölgelerde, teslim tarihi ve hizmet bedeli net projeler. Fiyat listesi, kat planı ve tahmini kira getirisi görüşmede.": "Developments in areas where our families live and can let, with clear completion dates and service charges. Price list, floor plans and estimated yield on the call.", "1-3 yatak odalı · Tower Bridge'e yürüme mesafesi": "1–3 bedrooms · walking distance to Tower Bridge", "12 dk": "12 min", "City'ye": "to the City", "Yüksek": "Strong", "kiracı talebi": "tenant demand", "Bow · Doğu Londra": "Bow · East London", "Stüdyo, 1, 2 ve 3 yatak odalı · Yeni etap": "Studio, 1, 2 and 3 bedrooms · New phase", "10 dk": "10 min", "Canary Wharf'a": "to Canary Wharf", "Giriş": "Entry", "seviyesi yatırım": "level investment", "Woolwich · Nehir kıyısı": "Woolwich · Riverside", "1, 2 ve 3 yatak odalı · Elizabeth Line": "1, 2 and 3 bedrooms · Elizabeth Line", "20 dk": "20 min", "Aile": "Families", "ve öğrenci": "and students", "Her görüşmede sorulan sorular, yazılı cevaplarıyla.": "The questions every call asks, with written answers.", "Bir başlığa dokunun; cevaplar açılır. Bize yalnızca sizin durumunuza özel olanı sorun.": "Tap a heading and the answers open. Ask us only what is specific to you.", "Londra'da ev kiralama": "Renting a home in London", "Referans, depozito, garantör ve 1 Mayıs 2026'da değişen kiracı hakları.": "References, deposit, guarantor and the tenant rights that changed on 1 May 2026.", "4 soru · Güncel: Ekim 2026": "4 questions · Updated October 2026", "Cevapları açın →": "Open the answers →", "Yeni projeden alırken": "Buying off-plan", "Teslim tarihi, hizmet bedeli, kira garantisi vaatleri ve avukat seçimi.": "Completion date, service charge, rental guarantee promises and choosing a solicitor.", "4 soru": "4 questions", "Türkiye'den ev sahibi olmak": "Being a landlord from abroad", "Non-Resident Landlord kaydı, kira gelirinin vergisi, yönetim.": "Non-Resident Landlord registration, tax on rent, management.", "Çocuğunuz için: kirala mı, al mı?": "For your child: rent or buy?", "Dört yıllık toplam maliyet, iki senaryo yan yana.": "Four-year total cost, two scenarios side by side.", "4 soru · Hesap dahil": "4 questions · Worked example included", "5 hafta": "5 weeks", "Depozito ne kadar?": "How much is the deposit?", "Yıllık kirası £50.000'in altındaki evlerde en fazla 5 haftalık kira. Ayrıca 1 haftalık rezervasyon depozitosu istenebilir; sözleşmede kiradan düşülür.": "At most 5 weeks' rent where annual rent is under £50,000. A 1-week holding deposit may also be asked for; it comes off the rent at signing.", "1 Mayıs 2026": "1 May 2026", "Yeni kiracı hakları ne getirdi?": "What did the new tenant rights change?", "Sabit süreli sözleşmeler kalktı, sözleşmeler süresiz; ev sahibi gerekçesiz çıkaramaz. Kira artışı yılda bir ve itiraz edilebilir. Peşin kira en fazla bir ay.": "Fixed terms are gone and tenancies are open-ended; landlords can no longer evict without grounds. Rent rises once a year and can be challenged. Rent in advance is capped at one month.", "3 yol": "3 routes", "Türkiye'den gelir belgem geçer mi?": "Will proof of income from abroad be accepted?", "Üç seçenek: İngiltere'de garantör, garantör hizmeti (yıllık kiranın yüzde birkaçı) ya da 6-12 aylık peşin ödeme. Hangisinin uygun olduğunu ilk görüşmede belirleriz.": "Three options: a UK guarantor, a guarantor service (a few percent of annual rent) or 6–12 months paid in advance. We settle which fits on the first call.", "5-10 gün": "5–10 days", "Başvurudan anahtara ne kadar sürer?": "How long from application to keys?", "Referans kontrolü, sözleşme ve depozito kaydı için 5-10 iş günü. Boş eve taşınmada bu süre 3 güne iner.": "5–10 working days for referencing, tenancy and deposit registration. For a vacant home it drops to 3 days.", "Bu bilgiler Ekim 2026 itibarıyla geçerlidir; sözleşme öncesi güncel halini birlikte kontrol ederiz.": "Valid as of October 2026; we check the current position together before you sign.", "Kiralama görüşmesi ayarlayın": "Book a rental call", "Peşinat ne zaman ödenir?": "When is the deposit paid?", "Sözleşme imzasında genellikle %10; bazı projelerde teslime kadar ek %5-10. Kalan tutar teslimde, nakit ya da krediyle.": "Usually 10% at exchange; some developments ask for a further 5–10% before completion. The balance on completion, cash or mortgage.", "6 ay önce": "6 months before", "Kredi için ne zaman başvurulur?": "When do I apply for a mortgage?", "Teslimden yaklaşık 6 ay önce. Yurt dışında yaşayanlar için kredi veren bankalar vardır; faiz ve peşinat şartları farklıdır, görüşmede anlatırız.": "About 6 months before completion. Some lenders serve overseas buyers; rates and deposit terms differ, and we walk you through them.", "Hizmet bedeli ne kadar?": "How much is the service charge?", "Yıllık hizmet bedeli projeye göre değişir; kapıcı, havuz ve spor salonu bedeli artırır. Her kısa listede bu rakam yazılıdır.": "Annual service charge varies by development; concierge, pool and gym push it up. Every shortlist states the figure.", "Sizin avukatınız": "Your solicitor", "Avukatı kim seçer?": "Who chooses the solicitor?", "Siz. Geliştiricinin önerdiği avukat yerine yurt dışı alıcı deneyimi olan bağımsız bir avukatla çalışırız; listemizdeki üç avukatı tanıştırırız.": "You do. Instead of the developer's suggested firm we work with an independent solicitor experienced with overseas buyers; we introduce three from our list.", "Teslim tarihi, kat planı ve kira getirisi projeye göre değişir; görüşmede proje bazında paylaşırız.": "Completion date, floor plans and yield vary by development; we share them per project on the call.", "Yatırım görüşmesi ayarlayın": "Book an investment call", "Non-Resident Landlord kaydı nedir?": "What is Non-Resident Landlord registration?", "Yurt dışında yaşayan ev sahibi için HMRC kaydı. Kayıt yapılırsa kira brüt ödenir, vergi yıl sonunda beyanla ödenir. Başvuruyu avukat ya da muhasebeciyle birlikte yaparız.": "An HMRC registration for landlords living abroad. Once registered, rent is paid gross and tax is settled through a year-end return. We file it with your solicitor or accountant.", "Kira gelirinde vergi var mı?": "Is rental income taxed?", "İngiltere'de kişisel muafiyet sınırı yıllık £12.570; üstü dilimli vergilenir. Türkiye ile çifte vergilendirme anlaşması vardır; muhasebeciniz iki ülkeyi birlikte planlar.": "The UK personal allowance is £12,570 a year; income above it is taxed in bands. A double-taxation treaty with Türkiye applies; your accountant plans both countries together.", "Yönetim ne kadar?": "How much is management?", "Kiracı bulma ve tam yönetim için kiranın yaklaşık %10-15'i. Tahsilat, bakım, kontrol ve yıllık raporlama buna dahildir.": "Roughly 10–15% of rent for tenant find plus full management. Collection, maintenance, inspections and annual reporting are included.", "Uzaktan": "Remote", "Kiracıyla hiç muhatap olur muyum?": "Will I ever deal with the tenant?", "Olmazsınız. Sözleşme, tahsilat ve arıza çağrıları yönetim ekibindedir; siz aylık raporu görürsünüz.": "No. Tenancy, collection and repair calls sit with the management team; you see the monthly report.", "Vergi rakamları 2026-27 dönemi içindir; beyan öncesi muhasebecinizle doğrularız.": "Tax figures are for 2026–27; we confirm them with your accountant before filing.", "Ev sahibi görüşmesi ayarlayın": "Book a landlord call", "4 yıl": "4 years", "Kiralamanın toplam maliyeti ne?": "What does renting cost in total?", "Kampüse 15 dakikalık bir stüdyo için aylık £1.700-2.200; dört yılda £80-105 bin. Buna depozito ve her yıl yeniden ev arama dahil değildir.": "£1,700–2,200 a month for a studio 15 minutes from campus; £80–105k over four years. That excludes deposits and a new search every year.", "Satın alıp satmanın maliyeti ne?": "What does buying and selling cost?", "£400 bin'lik bir dairede damga vergisi, avukat ve satış masrafı toplam £35-45 bin; karşılığında dört yıl kira ödenmez ve değer artışı sizde kalır. Bölgeye göre hesaplarız.": "On a £400k flat, stamp duty, legal and selling costs come to £35–45k; in return you pay no rent for four years and keep any growth. We work it out by area.", "Kampüse ne kadar yakın olmalı?": "How close to campus should it be?", "Londra'da 12-15 dakika yürüme ya da tek hat metro idealdir. Daha yakını fiyatı, daha uzağı güvenlik ve zaman maliyetini artırır.": "In London, 12–15 minutes on foot or one Tube line is ideal. Closer raises the price; farther raises the safety and time cost.", "Mezuniyet": "Graduation", "Sonra ne olur?": "What happens afterwards?", "Ev ya kiraya verilir ya satılır. İkinci senaryoda satış sürecini biz yürütürüz; bu yüzden alırken \"sonra kime kiralanır\" sorusunu da cevaplarız.": "The home is let or sold. In the second case we run the sale; that is why, when buying, we also answer \"who rents this afterwards\".", "Rakamlar Ekim 2026 piyasa aralıklarıdır; sizin bütçenizle iki senaryoyu birlikte hesaplarız.": "Figures are October 2026 market ranges; we run both scenarios with your budget.", "Müşterilerimiz anlatıyor": "In our clients' words", "Üç aile, üç karar": "Three families, three decisions", "Taşınan, yatırım yapan ve çocuğunu okutan ailelerden.": "From families who moved, invested, or sent a child to study.", "\"Okul ve ev aynı anda nasıl olacak diye başlamıştık. Üç haftada ikisi de hazırdı; taşındıktan sonra da aradığımızda açtılar.\"": "\"We started out wondering how school and home could happen at once. In three weeks both were ready, and they still picked up the phone after we moved.\"", "— Z. ve M. ailesi, Chiswick": "— Z. and M. family, Chiswick", "\"Daireyi görmeden aldım. Her oda videoyla gezildi, vergi ve hizmet bedeli önceden yazıldı. Kiracı ben Londra'ya gelmeden bulundu.\"": "\"I bought the flat without seeing it. Every room was walked through on video, tax and service charge written down in advance. The tenant was found before I came to London.\"", "— E. B., Bow Green'de 1+1": "— E. B., one-bed at Bow Green", "\"Oğlum UCL'e başlarken ben Ankara'daydım. Kampüse 12 dakika, güvenli bir bölge, garantör sorunu çözülmüş.\"": "\"I was in Ankara when my son started at UCL. Twelve minutes to campus, a safe area, the guarantor question solved.\"", "— S. K., King's Cross": "— S. K., King's Cross", "Müşteri sözleri izinle ve ilk adla yayınlanır.": "Client quotes are published with permission, by initials.", "Türkiye'de buluşalım": "Meet us in Türkiye", "Londra projelerini İstanbul'da, yüz yüze.": "London developments, face to face in Istanbul.", "Yılda birkaç kez İstanbul ve Bodrum'da proje sunumu yapıyor, sorularınızı birebir cevaplıyoruz. Yeni tarih açıklandığında ilk siz öğrenin.": "A few times a year we present developments in Istanbul and Bodrum and answer your questions one to one. Be the first to hear the next date.", "Haber verin": "Keep me posted", "Helin Özçelik, Kurucu": "Helin Özçelik, Founder", "Richmond, Londra": "Richmond, London", "Güvence": "Assurance", "Client Money Protection kapsamında": "Covered by Client Money Protection", "HMRC kayıtlı emlak acentesi": "HMRC-registered estate agency", "ICO veri koruma kaydı": "ICO data protection registration", "Takip edin": "Follow", "Aylık Türkçe bülten: Londra Notları": "Monthly newsletter: London Notes", "Çalışma saatleri": "Hours", "Pazartesi–Cuma 9:00–18:00 (Londra)": "Monday–Friday 9:00–18:00 (London)", "WhatsApp mesajlarına aynı gün dönüş": "WhatsApp replies the same day", "Türkiye saatiyle akşam görüşmeleri mümkün": "Evening calls on Türkiye time available", "Londra bütçeniz, sterlin": "Your London budget, sterling", "Bu bütçeyle:": "With this budget:", "milyon": "million", "Standart dilimler": "Standard bands", "Ek konut (+%5)": "Additional dwelling (+5%)", "Yurt dışında oturan alıcı (+%2)": "Non-resident buyer (+2%)", "Fiyata oranı": "Share of price", "Zone 3–4'te yeni projede stüdyo ya da 1+1; Elizabeth Line hattında.": "A new-build studio or one-bed in Zone 3–4, on the Elizabeth Line.", "Zone 2–3'te yeni projede 1+1, bazı bölgelerde 2+1; Canary Wharf, Stratford, Woolwich.": "A new-build one-bed in Zone 2–3, a two-bed in some areas; Canary Wharf, Stratford, Woolwich.", "Zone 2'de 2+1; nehir kıyısı projeler, 24 saat kapıcı, spor salonu.": "A two-bed in Zone 2; riverside developments, 24-hour concierge, gym.", "Zone 1–2'de 2+1 ya da 3+1; Battersea, Royal Docks, King's Cross çevresi.": "A two- or three-bed in Zone 1–2; Battersea, Royal Docks, around King's Cross.", "Zone 1'de 3+1, nehir ya da park manzarası; Bayswater, Chelsea, Nine Elms.": "A three-bed in Zone 1 with river or park views; Bayswater, Chelsea, Nine Elms.", "Adınız": "Your name", "Telefon ya da WhatsApp": "Phone or WhatsApp", "Konu": "Topic", "Size uygun zaman": "A time that suits you", "Hafta içi gündüz (Londra saati)": "Weekday daytime (London time)", "Hafta içi akşam (Türkiye saati)": "Weekday evening (Türkiye time)", "Hafta sonu": "Weekend", "Londra'ya taşınma": "Moving to London", "Yatırım": "Investment", "Öğrenci evi": "Student home", "Kiralama": "Renting", "Damga vergisi hesabım": "My stamp duty figure", "İstanbul / Bodrum buluşması": "Istanbul / Bodrum meeting", "Aylık bülten": "Monthly newsletter", "Kısa not (isteğe bağlı)": "Short note (optional)", "WhatsApp'tan gönderin": "Send via WhatsApp", "Formu gönderin": "Send the form", "Gönderince WhatsApp açılır; mesaj hazır gelir, siz yalnızca gönderirsiniz. Aynı gün dönüş.": "Sending opens WhatsApp with the message ready; you just hit send. We reply the same day.", "Mesajınız hazır.": "Your message is ready.", "WhatsApp yeni sekmede açıldı. Açılmadıysa aşağıdaki düğmeye dokunun. 15 dakikalık görüşme için aynı gün dönüş yaparız.": "WhatsApp opened in a new tab. If it didn't, tap the button below. We get back to you the same day to set the 15-minute call.", "WhatsApp'ı açın": "Open WhatsApp", "Kapat": "Close", "E-posta ile gönderin": "Send by e-mail", "Merhaba Helin Hanım, ": "Hello Helin, ", "konusunda 15 dakikalık görüşme istiyorum.": "I'd like a 15-minute call about", "Adım": "My name is", "Uygun zaman": "Best time", "Not": "Note", "Hesapladığım damga vergisi": "The stamp duty I calculated", "Merhaba, Londra'da ev konusunda bilgi almak istiyorum.": "Hello, I'd like some information about a home in London.", "Aylık bültene abone olun": "Subscribe to the monthly newsletter"};
+  var LANG='tr';
+  function t(k){ return LANG==='en' && EN[k] ? EN[k] : k; }
+(function(){
+  // Üç yol sekmeleri
+  var tabs=document.querySelectorAll('.tab');
+  tabs.forEach(function(t){t.addEventListener('click',function(){
+    tabs.forEach(function(o){o.setAttribute('aria-selected','false');document.getElementById(o.getAttribute('aria-controls')).hidden=true;});
+    t.setAttribute('aria-selected','true');document.getElementById(t.getAttribute('aria-controls')).hidden=false;
+  });});
+  // Rehber bilgi ekranları
+  var guides=document.querySelectorAll('.guide');
+  guides.forEach(function(g){g.addEventListener('click',function(){
+    var open=g.getAttribute('aria-expanded')==='true';
+    guides.forEach(function(o){o.setAttribute('aria-expanded','false');document.getElementById(o.getAttribute('aria-controls')).hidden=true;});
+    if(!open){g.setAttribute('aria-expanded','true');document.getElementById(g.getAttribute('aria-controls')).hidden=false;}
+  });});
+  // Damga vergisi
+  var bands=[[125000,0],[250000,0.02],[925000,0.05],[1500000,0.10],[Infinity,0.12]];
+  // Hero reader
+  (function(){
+    var r=document.getElementById('butce'); if(!r) return;
+    var FX=59.5, YIELD=0.046, GROWTH_2005=3.1; // demo assumptions; London avg roughly 3x in GBP since 2005
+    var what=[[350000,'Zone 3–4\'te yeni projede stüdyo ya da 1+1; Elizabeth Line hattında.'],[550000,'Zone 2–3\'te yeni projede 1+1, bazı bölgelerde 2+1; Canary Wharf, Stratford, Woolwich.'],[800000,'Zone 2\'de 2+1; nehir kıyısı projeler, 24 saat kapıcı, spor salonu.'],[1200000,'Zone 1–2\'de 2+1 ya da 3+1; Battersea, Royal Docks, King\'s Cross çevresi.'],[Infinity,'Zone 1\'de 3+1, nehir ya da park manzarası; Bayswater, Chelsea, Nine Elms.']];
+    function gbp(n){return '£'+Math.round(n).toLocaleString('tr-TR');}
+    function sdlt(p){var base=0,prev=0;for(var i=0;i<bands.length;i++){var top=bands[i][0];if(p>prev){base+=(Math.min(p,top)-prev)*bands[i][1];}prev=top;}return base+p*0.07;}
+    function upd(){
+      var p=+r.value;
+      document.getElementById('r-gbp').firstChild.nodeValue=gbp(p);
+      document.getElementById('r-try').textContent='≈ ₺'+(p*FX/1e6).toLocaleString(LANG==='en'?'en-GB':'tr-TR',{maximumFractionDigits:1})+' '+t('milyon');
+      for(var i=0;i<what.length;i++){if(p<what[i][0]){document.getElementById('r-what').innerHTML='<strong>'+t('Bu bütçeyle:')+'</strong> '+t(what[i][1]);break;}}
+            document.getElementById('r-sdlt').textContent=gbp(sdlt(p));
+      document.getElementById('r-rent').textContent=gbp(p*YIELD/12);
+      document.getElementById('r-2005').textContent=gbp(p/GROWTH_2005);
+    }
+    r.addEventListener('input',upd); upd(); window.__upd=upd;
+  })();
+  function fmt(n){return '£'+Math.round(n).toLocaleString('tr-TR');}
+  window.__calc=calc; function calc(){
+    var p=parseFloat(document.getElementById('price').value)||0;
+    var nr=document.getElementById('res').value==='nr';
+    var add=document.getElementById('add').value==='y';
+    var base=0,prev=0;
+    for(var i=0;i<bands.length;i++){var top=bands[i][0];if(p>prev){base+=(Math.min(p,top)-prev)*bands[i][1];}prev=top;}
+    var addT=add?p*0.05:0, nrT=nr?p*0.02:0, total=base+addT+nrT;
+    document.getElementById('total').textContent=fmt(total);
+    var rows=[[t('Standart dilimler'),base]];
+    if(add)rows.push([t('Ek konut (+%5)'),addT]);
+    if(nr)rows.push([t('Yurt dışında oturan alıcı (+%2)'),nrT]);
+    rows.push([t('Fiyata oranı'),(p?(total/p*100).toFixed(1):'0')+'%']);
+    document.getElementById('rows').innerHTML=rows.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+(typeof r[1]==='number'?fmt(r[1]):r[1])+'</td></tr>';}).join('');
+  }
+  document.getElementById('go').addEventListener('click',calc);
+  ['price','res','add'].forEach(function(id){document.getElementById(id).addEventListener('change',calc);});
+  calc();
+})();
+
+
+  (function(){
+    var nodes=[];
+    function collect(n){ if(n.nodeType===3){ var v=n.nodeValue.replace(/\s+/g,' ').trim(); if(v && EN[v]) nodes.push([n,n.nodeValue,v]); } else if(n.nodeType===1 && !/^(SCRIPT|STYLE)$/.test(n.tagName)) { for(var c=n.firstChild;c;c=c.nextSibling) collect(c); } }
+    collect(document.body);
+    var attrs=[]; document.querySelectorAll('[alt],[aria-label],[placeholder]').forEach(function(el){ ['alt','aria-label','placeholder'].forEach(function(a){ var v=el.getAttribute(a); if(v && EN[v]) attrs.push([el,a,v]); }); });
+    function setLang(l){
+      LANG=l; document.documentElement.lang=l;
+      nodes.forEach(function(x){ x[0].nodeValue = l==='en' ? x[1].replace(x[2], EN[x[2]]) : x[1]; });
+      attrs.forEach(function(x){ x[0].setAttribute(x[1], l==='en' ? EN[x[2]] : x[2]); });
+      document.querySelectorAll('.lang button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.lang===l ? 'true':'false'); });
+      if(window.__upd) window.__upd(); if(window.__calc) window.__calc(); if(window.__wa) window.__wa();
+      try{ localStorage.setItem('atlas-lang',l); }catch(e){}
+    }
+    document.querySelectorAll('.lang button').forEach(function(b){ b.addEventListener('click',function(){ setLang(b.dataset.lang); }); });
+    var saved=null; try{ saved=localStorage.getItem('atlas-lang'); }catch(e){}
+    if(saved==='en') setLang('en');
+  })();
+
+
+  // Randevu / booking
+  (function(){
+    var WA='447493099830', MAIL='helin@atlasrealestatelondon.com';
+    var m=document.getElementById('randevu'), f=document.getElementById('rv-form');
+    var topics={tasinma:"Londra'ya taşınma",yatirim:"Yatırım",ogrenci:"Öğrenci evi",kira:"Kiralama",evsahibi:"Türkiye'den ev sahibi olmak",vergi:"Damga vergisi hesabım",etkinlik:"İstanbul / Bodrum buluşması",bulten:"Aylık bülten"};
+    function open(konu){ m.classList.remove('sent'); m.classList.add('open'); if(konu&&topics[konu]){ var sel=f.konu; for(var i=0;i<sel.options.length;i++){ if(sel.options[i].text===t(topics[konu])){ sel.selectedIndex=i; break; } } } setTimeout(function(){ f.ad.focus(); },50); }
+    function close(){ m.classList.remove('open'); }
+    document.querySelectorAll('[data-konu]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); open(a.dataset.konu); }); });
+    m.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click',close); });
+    m.addEventListener('click',function(e){ if(e.target===m) close(); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+    function msg(){
+      var konu=f.konu.options[f.konu.selectedIndex].text;
+      var s=t('Merhaba Helin Hanım, ')+konu+' '+t('konusunda 15 dakikalık görüşme istiyorum.')+'\n'+t('Adım')+': '+f.ad.value.trim()+'\n'+t('Telefon ya da WhatsApp')+': '+f.tel.value.trim()+'\n'+t('Uygun zaman')+': '+f.zaman.options[f.zaman.selectedIndex].text;
+      if(/vergi|stamp/i.test(konu)){ var tot=document.getElementById('total'); if(tot && tot.textContent.trim()!=='£0'){ s+='\n'+t('Hesapladığım damga vergisi')+': '+tot.textContent.trim(); } }
+      if(f['not'].value.trim()) s+='\n'+t('Not')+': '+f['not'].value.trim();
+      return s;
+    }
+    function valid(){ var ok=true; ['ad','tel'].forEach(function(n){ var el=f[n]; if(!el.value.trim()){ ok=false; el.style.borderColor='var(--brick)'; el.focus(); } else el.style.borderColor=''; }); return ok; }
+    f.addEventListener('submit',function(e){ e.preventDefault(); if(!valid()) return; var url='https://wa.me/'+WA+'?text='+encodeURIComponent(msg()); document.getElementById('rv-wa').href=url; window.open(url,'_blank','noopener'); m.classList.add('sent'); });
+    m.querySelector('[data-mail]').addEventListener('click',function(){ if(!valid()) return; var konu=f.konu.options[f.konu.selectedIndex].text; location.href='mailto:'+MAIL+'?subject='+encodeURIComponent(konu+' · '+f.ad.value.trim())+'&body='+encodeURIComponent(msg()); });
+    // Floating WhatsApp: direct line with a ready message
+    var wa=document.querySelector('a.wa'); if(wa){ wa.href='https://wa.me/'+WA+'?text='+encodeURIComponent(t('Merhaba, Londra\'da ev konusunda bilgi almak istiyorum.')); wa.target='_blank'; wa.rel='noopener'; }
+    window.__wa=function(){ if(wa) wa.href='https://wa.me/'+WA+'?text='+encodeURIComponent(t('Merhaba, Londra\'da ev konusunda bilgi almak istiyorum.')); };
+  })();
+</script>

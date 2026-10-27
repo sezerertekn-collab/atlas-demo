@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Helin Paneli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Helin'in kolaylık paneli: dört araç, tek sayfa. Aynı Atlas tokenları. */
+:root {
+  --bg: #F7F5F0; --surface: #FFFFFF; --ink: #17212B; --muted: #5E6973; --line: #E1DCD2;
+  --brick: #A8402C; --brick-soft: #F6E7E2; --moss: #1E4C45; --moss-soft: #E1EEEA; --sand: #E9DFCB;
+  --display: "Fraunces", Georgia, serif; --body: "Manrope", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #14191E; --surface: #1C2329; --ink: #ECE8E0; --muted: #A3ABB3; --line: #2F3942;
+  --brick: #E07A62; --brick-soft: #3A2520; --moss: #7FC4B6; --moss-soft: #1C3330; --sand: #3A3426; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #14191E; --surface: #1C2329; --ink: #ECE8E0; --muted: #A3ABB3; --line: #2F3942;
+  --brick: #E07A62; --brick-soft: #3A2520; --moss: #7FC4B6; --moss-soft: #1C3330; --sand: #3A3426; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(1.7rem, 4vw, 2.5rem); } h2 { font-size: 1.5rem; } h3 { font-size: 1.1rem; }
+p { margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 24px max(16px, env(safe-area-inset-right, 0px)) 80px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 22px; }
+.kicker { font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brick); font-weight: 700; }
+.muted { color: var(--muted); }
+.top { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.top .brand { display: flex; align-items: center; gap: 12px; }
+.top .brand .av { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; object-position: 55% 15%; border: 2px solid var(--brick); }
+.top .brand b { display: block; font-family: var(--display); font-size: 1.15rem; letter-spacing: 0.06em; }
+.top .brand span { font-size: 0.78rem; color: var(--muted); }
+.demo { font-size: 0.78rem; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; }
+.intro { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; align-items: end; }
+.intro p.lede { font-size: 1.05rem; color: var(--muted); margin-top: 8px; max-width: 58ch; }
+.rule { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 0.9rem; }
+.rule b { color: var(--moss); }
+.tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.tabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 12px 14px; font: inherit; font-weight: 600; color: var(--muted); cursor: pointer; white-space: nowrap; display: flex; gap: 8px; align-items: center; }
+.tabs button .n { background: var(--brick); color: #fff; border-radius: 999px; font-size: 0.72rem; padding: 1px 8px; }
+.tabs button[aria-selected=true] { color: var(--ink); border-bottom-color: var(--brick); }
+.panel[hidden] { display: none; }
+.panel { display: grid; gap: 18px; }
+.head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.head p { color: var(--muted); max-width: 64ch; margin-top: 4px; }
+.helin { font-size: 0.85rem; background: var(--moss-soft); color: var(--moss); border-radius: 999px; padding: 6px 14px; font-weight: 600; white-space: nowrap; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; display: grid; gap: 12px; min-width: 0; }
+.card h3 { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; font-weight: 600; font-size: 0.9rem; text-decoration: none; border: 1px solid transparent; cursor: pointer; font-family: var(--body); line-height: 1.2; }
+.btn.primary { background: var(--brick); color: #fff; }
+.btn.ghost { border-color: var(--line); background: var(--surface); color: var(--ink); }
+.btn.small { padding: 7px 12px; font-size: 0.8rem; }
+.btn[disabled] { opacity: .5; cursor: default; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+label { display: grid; gap: 5px; font-size: 0.8rem; font-weight: 600; min-width: 0; }
+input, select, textarea { font: inherit; font-size: 0.95rem; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+textarea { min-height: 110px; resize: vertical; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+td b { font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; background: var(--sand); }
+.pill.new { background: var(--brick-soft); color: var(--brick); }
+.pill.wait { background: var(--moss-soft); color: var(--moss); }
+.pill.done { background: var(--line); color: var(--muted); }
+.lead { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.lead .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--brick); }
+.lead .dot.wait { background: var(--moss); } .lead .dot.done { background: var(--line); }
+.lead b { display: block; } .lead small { color: var(--muted); display: block; }
+.lead select { width: auto; padding: 5px 8px; font-size: 0.8rem; }
+.out { background: var(--bg); border: 1px dashed var(--line); border-radius: 12px; padding: 14px 16px; white-space: pre-wrap; font-size: 0.92rem; min-height: 80px; }
+.out:empty::before { content: attr(data-empty); color: var(--muted); }
+.sheet { background: #fff; color: #17212B; border: 1px solid var(--line); border-radius: 16px; padding: 26px 28px; display: grid; gap: 16px; }
+.sheet .sh { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; border-bottom: 2px solid #17212B; padding-bottom: 12px; }
+.sheet .sh b { font-family: var(--display); font-size: 1.3rem; letter-spacing: 0.05em; display: block; }
+.sheet .sh small { color: #5E6973; }
+.sheet h2 { font-size: 1.35rem; }
+.sheet table { font-size: 0.88rem; } .sheet th, .sheet td { border-color: #E1DCD2; }
+.sheet td.n, .sheet th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.sheet .note { font-size: 0.75rem; color: #5E6973; }
+.opt { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; align-items: end; }
+.opt .rm { align-self: end; }
+.qa { display: grid; gap: 8px; }
+.qa details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.qa summary { cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.qa summary::-webkit-details-marker { display: none; }
+.qa .a { margin-top: 8px; display: grid; gap: 8px; font-size: 0.92rem; }
+.qa .a p { background: var(--bg); border-radius: 10px; padding: 10px 12px; white-space: pre-wrap; }
+.qa .a .row { justify-content: flex-end; }
+.mic { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-size: 1.1rem; display: inline-grid; place-items: center; }
+.mic.on { background: var(--brick); color: #fff; border-color: var(--brick); animation: pulse 1.2s infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(168,64,44,.35); } 50% { box-shadow: 0 0 0 10px rgba(168,64,44,0); } }
+.gen { display: grid; gap: 12px; }
+.gen .blk { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.gen .blk h4 { margin: 0 0 6px; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brick); display: flex; justify-content: space-between; align-items: center; }
+.gen .blk div { white-space: pre-wrap; font-size: 0.92rem; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: 0.85rem; opacity: 0; transition: opacity .25s; pointer-events: none; z-index: 50; }
+.toast.show { opacity: 1; }
+.src { font-size: 0.78rem; color: var(--muted); }
+@media (max-width: 820px) { .grid, .intro { grid-template-columns: minmax(0, 1fr); } .opt { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media print { body { background: #fff; } .wrap > :not(#p-liste), #p-liste > :not(.print-area), .no-print { display: none !important; } .sheet { border: 0; padding: 0; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div class="brand"><img class="av" src="img/helin-portre.jpg" alt=""><div><b>HELİN PANELİ</b><span>Atlas Real Estate London · kolaylık paketi</span></div></div>
+  <span class="demo">Demo · Ekim 2026 · Sunucu yok, her şey bu sayfada çalışır</span>
+</div>
+
+<div class="intro">
+  <div>
+    <span class="kicker">Dört araç, tek sayfa</span>
+    <h1>Helin'in işi iki şey: müşteriyle konuşmak, kameraya konuşmak. Gerisi burada.</h1>
+    <p class="lede">Site formundan gelen mesaj kendi kendine listeye düşer. Kısa liste iki dakikada hazırlanır. İki dakikalık sesli not dört gönderiye dönüşür. Sık sorulara cevap tek dokunuşla gider.</p>
+  </div>
+  <div class="rule"><b>Seçim kuralı:</b> her araç tek soruyla elendi. "Helin'in önüne iş mi çıkarıyor, iş mi alıyor?" Yeni bir panel öğrenmek yok; her şey WhatsApp ve telefon kamerasının etrafında.</div>
+</div>
+
+<div class="tabs" role="tablist">
+  <button role="tab" aria-selected="true" aria-controls="p-talep" id="t-talep">Bu hafta kim bekliyor <span class="n" id="n-new">3</span></button>
+  <button role="tab" aria-selected="false" aria-controls="p-liste" id="t-liste">Kısa liste üretici</button>
+  <button role="tab" aria-selected="false" aria-controls="p-icerik" id="t-icerik">Sesli nottan gönderi</button>
+  <button role="tab" aria-selected="false" aria-controls="p-yanit" id="t-yanit">Hızlı yanıtlar</button>
+</div>
+
+<!-- 1 · Talepler -->
+<section class="panel" id="p-talep" role="tabpanel" aria-labelledby="t-talep">
+  <div class="head"><div><span class="kicker">01 · Talepler</span><h2>Sitedeki her buton bir WhatsApp mesajı; her mesaj burada bir satır.</h2><p>Form yok, CRM yok. Site formu mesajı şablonla yazar; bu sayfa şablonu okur ve listeye ekler. Cuma günü özet tek dokunuşla hazır.</p></div><span class="helin">Helin'e düşen: cuma özetini okumak</span></div>
+  <div class="grid">
+    <div class="card">
+      <h3>Bekleyenler <span class="btn ghost small" id="fri">Cuma özetini hazırla</span></h3>
+      <div id="leads"></div>
+      <p class="src">Durumu değiştirince sıralama ve sayaç güncellenir. Demo verisi; gerçek sürümde WhatsApp Business → Google Sheet bağlantısı aynı tabloyu doldurur.</p>
+      <div class="out" id="fri-out" data-empty="Cuma özeti burada çıkar; WhatsApp'a ya da e-postaya kopyalanır."></div>
+      <div class="row no-print"><button class="btn ghost small" data-copy="#fri-out">Kopyala</button></div>
+    </div>
+    <div class="card">
+      <h3>Yeni mesajı yapıştırın</h3>
+      <p class="muted" style="font-size:.9rem">Siteden gelen WhatsApp mesajını buraya yapıştırın; satır kendiliğinden oluşur. Aşağıda örnek bir mesaj var, "Ekle"ye basıp deneyin.</p>
+      <textarea id="paste">Merhaba Helin Hanım, Öğrenci evi konusunda 15 dakikalık görüşme istiyorum.
+Adım: Deniz Aksoy
+Telefon ya da WhatsApp: +90 532 000 00 00
+Uygun zaman: Hafta içi akşam (Türkiye saati)
+Not: Kızım Eylül'de King's College'a başlıyor, bütçe aylık £2.000.</textarea>
+      <div class="row"><button class="btn primary" id="add">Listeye ekle</button><span class="src" id="parse-msg"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · Kısa liste -->
+<section class="panel" id="p-liste" role="tabpanel" aria-labelledby="t-liste" hidden>
+  <div class="head"><div><span class="kicker">02 · Kısa liste üretici</span><h2>"Rakamlarıyla iki üç seçenek" vaadi, iki dakikada tek sayfa.</h2><p>Projeyi, fiyatı, hizmet bedelini ve teslim tarihini girin. Damga vergisi, lira karşılığı, tahmini kira ve getiri kendiliğinden hesaplanır. Müşteriye PDF ya da WhatsApp metni olarak gider.</p></div><span class="helin">Helin'e düşen: rakamları girmek</span></div>
+  <div class="card no-print">
+    <div class="row" style="justify-content:space-between"><div class="row"><label>Müşteri<input id="c-name" value="Aksoy ailesi"></label><label>Yol<select id="c-path"><option>Yatırım</option><option>Londra'ya taşınma</option><option>Öğrenci evi</option></select></label><label>Alıcı<select id="c-res"><option value="nr">Yurt dışında yaşıyor (+%2)</option><option value="uk">İngiltere'de yaşıyor</option></select></label><label>Başka evi<select id="c-add"><option value="y">Var (+%5)</option><option value="n">Yok</option></select></label></div></div>
+    <div id="opts"></div>
+    <div class="row"><button class="btn ghost small" id="opt-add">+ Seçenek ekle</button><span class="src">Kur 59,5 ₺/£ · brüt getiri varsayımı %4,6 · SDLT 2026 dilimleri. Demo varsayımları; sayfanın altında yazılır.</span></div>
+  </div>
+  <div class="print-area">
+    <div class="sheet" id="sheet"></div>
+  </div>
+  <div class="row no-print"><button class="btn primary" id="print">Yazdır / PDF</button><button class="btn ghost" id="sheet-wa">WhatsApp metni olarak kopyala</button></div>
+</section>
+
+<!-- 3 · İçerik -->
+<section class="panel" id="p-icerik" role="tabpanel" aria-labelledby="t-icerik" hidden>
+  <div class="head"><div><span class="kicker">03 · Sesli nottan gönderi</span><h2>Yürürken iki dakika konuşun; carousel, Reel senaryosu, açıklama ve bülten paragrafı hazır gelsin.</h2><p>Helin bir konuyu anlatır. Sayfa onu Atlas diliyle dört içeriğe çevirir: olumlu, rakamlı, kısa cümleli; klişesiz. Helin okur, "tamam" der.</p></div><span class="helin">Helin'e düşen: konuşmak ve "tamam" demek</span></div>
+  <div class="grid">
+    <div class="card">
+      <h3>Helin'in notu <button class="mic" id="mic" title="Mikrofonla söyleyin" aria-label="Mikrofonla söyleyin">🎙</button></h3>
+      <textarea id="note" style="min-height:180px">Bugün Woolwich'te Royal Arsenal Riverside'da bir müşterimle iki daire gezdim. Elizabeth Line'la Canary Wharf 12 dakika, Bond Street 25 dakika. 1+1'ler 450 bin civarı, kira 1.900-2.000 arası, yani yüzde beşe yakın brüt getiri. Hizmet bedeli yılda 3.200. Teslim 2027 ilk çeyrek. Müşteri Türkiye'de yaşıyor, ek vergi yüzde yedi; onu da baştan hesapladık. Nehir kıyısı, kapıcı var, aileler için park ve okul da yakın.</textarea>
+      <div class="row"><button class="btn primary" id="gen">Dört içerik üret</button><button class="btn ghost" id="stop" hidden>Durdur</button><span class="src" id="gen-msg"></span></div>
+      <p class="src">Mikrofon tarayıcıya bağlıdır (Chrome ve Safari'de çalışır). Üretim, panelde sizin Claude hesabınızla çalışır; ilk seferde izin ister.</p>
+    </div>
+    <div class="gen" id="gen-out">
+      <div class="blk"><h4>Carousel · 6 kart <button class="btn ghost small" data-copy="#g-car">Kopyala</button></h4><div id="g-car" class="muted">Henüz üretilmedi.</div></div>
+      <div class="blk"><h4>Reel senaryosu · 45 sn <button class="btn ghost small" data-copy="#g-reel">Kopyala</button></h4><div id="g-reel" class="muted">—</div></div>
+      <div class="blk"><h4>Açıklama metni <button class="btn ghost small" data-copy="#g-cap">Kopyala</button></h4><div id="g-cap" class="muted">—</div></div>
+      <div class="blk"><h4>Bülten paragrafı <button class="btn ghost small" data-copy="#g-news">Kopyala</button></h4><div id="g-news" class="muted">—</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · Hızlı yanıtlar -->
+<section class="panel" id="p-yanit" role="tabpanel" aria-labelledby="t-yanit" hidden>
+  <div class="head"><div><span class="kicker">04 · Hızlı yanıtlar</span><h2>En sık on soru, Atlas diliyle yazılmış, tek dokunuşla kopyalanır.</h2><p>WhatsApp Business'ta "hızlı yanıt" olarak kaydedilir; mesai dışı mesaj ve yorum isteme şablonu da burada. TR ve EN.</p></div><span class="helin">Helin'e düşen: hiçbir şey</span></div>
+  <div class="row"><span class="kicker">Dil</span><button class="btn ghost small" data-lang="tr" aria-pressed="true">TR</button><button class="btn ghost small" data-lang="en" aria-pressed="false">EN</button></div>
+  <div class="qa" id="qa"></div>
+</section>
+
+<p class="src">Dayanak: Instagram demosundaki kolaylık paketi (WhatsApp Business otomatik cevap, randevu linki, sesli mesajdan gönderi, site formu → WhatsApp, tek sayfalık müşteri listesi, yorum isteme, aylık bülten). Bu panel o paketin çalışan hâlidir; gerçek sürümde WhatsApp Business ve Google Sheet bağlantısı eklenir.</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+  var FX=59.5, YIELD=0.046, bands=[[125000,0],[250000,0.02],[925000,0.05],[1500000,0.10],[Infinity,0.12]];
+  function gbp(n){return '£'+Math.round(n).toLocaleString('tr-TR');}
+  function sdlt(p,nr,add){var base=0,prev=0;for(var i=0;i<bands.length;i++){var top=bands[i][0];if(p>prev){base+=(Math.min(p,top)-prev)*bands[i][1];}prev=top;}return base+(add?p*0.05:0)+(nr?p*0.02:0);}
+  function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show');},1600);}
+  function copyText(s){ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(s).then(function(){toast('Kopyalandı');},function(){toast('Kopyalanamadı');}); } else { var ta=document.createElement('textarea');ta.value=s;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Kopyalandı');}catch(e){toast('Kopyalanamadı');}ta.remove(); } }
+  document.addEventListener('click',function(e){var b=e.target.closest('[data-copy]');if(b){copyText($(b.dataset.copy).textContent);}});
+
+  // Tabs
+  $$('.tabs [role=tab]').forEach(function(t){t.addEventListener('click',function(){$$('.tabs [role=tab]').forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false');$('#'+x.getAttribute('aria-controls')).hidden=(x!==t);});try{localStorage.setItem('hp-tab',t.id);}catch(e){}});});
+  try{var st=localStorage.getItem('hp-tab');if(st&&$('#'+st))$('#'+st).click();}catch(e){}
+
+  // 1 · Leads
+  var leads=[
+    {ad:'Deniz Aksoy',konu:'Öğrenci evi',tel:'+90 532 000 00 00',zaman:'Hafta içi akşam (Türkiye saati)',not:"Kızım Eylül'de King's College'a başlıyor",tarih:'Bugün',durum:'new'},
+    {ad:'Murat Kaya',konu:'Yatırım',tel:'+90 533 000 00 00',zaman:'Hafta içi gündüz (Londra saati)',not:'Bütçe £500k, Bow Green sordu',tarih:'Dün',durum:'new'},
+    {ad:'Selin ve Emre Yıldız',konu:"Londra'ya taşınma",tel:'+90 535 000 00 00',zaman:'Hafta sonu',not:'Mart ayında taşınma, Chiswick okulları',tarih:'Dün',durum:'new'},
+    {ad:'Ayşe Demir',konu:'Damga vergisi hesabım',tel:'+90 536 000 00 00',zaman:'Hafta içi akşam (Türkiye saati)',not:'Hesapladığı vergi £62.000',tarih:'3 gün önce',durum:'wait'},
+    {ad:'Can Öztürk',konu:"Türkiye'den ev sahibi olmak",tel:'+44 7000 000000',zaman:'Hafta içi gündüz (Londra saati)',not:'NRL kaydı ve yönetim',tarih:'5 gün önce',durum:'done'}
+  ];
+  try{var sv=localStorage.getItem('hp-leads');if(sv)leads=JSON.parse(sv);}catch(e){}
+  var labels={new:'Yeni',wait:'Görüşme ayarlandı',done:'Tamamlandı'};
+  function saveLeads(){try{localStorage.setItem('hp-leads',JSON.stringify(leads));}catch(e){}}
+  function renderLeads(){
+    var order={new:0,wait:1,done:2}; var sorted=leads.slice().sort(function(a,b){return order[a.durum]-order[b.durum];});
+    $('#leads').innerHTML=sorted.map(function(l){var i=leads.indexOf(l);return '<div class="lead"><span class="dot '+l.durum+'"></span><div><b>'+esc(l.ad)+' · '+esc(l.konu)+'</b><small>'+esc(l.zaman)+' · '+esc(l.tel)+(l.not?' · '+esc(l.not):'')+' · <i>'+esc(l.tarih)+'</i></small></div><select data-i="'+i+'">'+Object.keys(labels).map(function(k){return '<option value="'+k+'"'+(k===l.durum?' selected':'')+'>'+labels[k]+'</option>';}).join('')+'</select></div>';}).join('');
+    $('#n-new').textContent=leads.filter(function(l){return l.durum==='new';}).length;
+    $$('#leads select').forEach(function(s){s.addEventListener('change',function(){leads[+s.dataset.i].durum=s.value;saveLeads();renderLeads();});});
+  }
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  renderLeads();
+  function parseMsg(s){
+    var get=function(k){var m=s.match(new RegExp(k+'\\s*:\\s*(.+)'));return m?m[1].trim():'';};
+    var konu=(s.match(/Merhaba Helin Hanım,\s*(.+?)\s+konusunda/)||[])[1]||(s.match(/call about\s+(.+?)[\.\n]/)||[])[1]||'';
+    var ad=get('Adım')||get('My name is'), tel=get('Telefon ya da WhatsApp')||get('Phone or WhatsApp'), zaman=get('Uygun zaman')||get('Best time'), not=get('Not')||get('Note');
+    if(!ad||!konu) return null;
+    return {ad:ad,konu:konu,tel:tel,zaman:zaman,not:not,tarih:'Şimdi',durum:'new'};
+  }
+  $('#add').addEventListener('click',function(){var l=parseMsg($('#paste').value);if(!l){$('#parse-msg').textContent='Şablon tanınmadı; sitedeki formun ürettiği mesajı yapıştırın.';return;}leads.unshift(l);saveLeads();renderLeads();$('#parse-msg').textContent='Eklendi: '+l.ad+' · '+l.konu;toast('Listeye eklendi');$('#paste').value='';});
+  $('#fri').addEventListener('click',function(){
+    var n=leads.filter(function(l){return l.durum==='new';}), w=leads.filter(function(l){return l.durum==='wait';});
+    var s='Cuma özeti · Atlas\n\nYeni ('+n.length+'):\n'+(n.map(function(l){return '• '+l.ad+' · '+l.konu+' · '+l.zaman+(l.not?' · '+l.not:'');}).join('\n')||'• —')+'\n\nGörüşme ayarlanan ('+w.length+'):\n'+(w.map(function(l){return '• '+l.ad+' · '+l.konu;}).join('\n')||'• —')+'\n\nBu hafta tamamlanan: '+leads.filter(function(l){return l.durum==='done';}).length;
+    $('#fri-out').textContent=s;
+  });
+
+  // 2 · Shortlist
+  var opts=[
+    {proje:'Royal Arsenal Riverside',bolge:'Woolwich · Zone 4 · Elizabeth Line',tip:'1+1',fiyat:450000,hizmet:3200,teslim:'2027 Q1',kira:1950},
+    {proje:'Bow Green',bolge:'Bow · Zone 2',tip:'1+1',fiyat:485000,hizmet:2900,teslim:'2026 Q4',kira:2050},
+    {proje:'London Dock',bolge:'Wapping · Zone 1-2',tip:'1+1',fiyat:720000,hizmet:5800,teslim:'Hazır',kira:2900}
+  ];
+  function renderOpts(){
+    $('#opts').innerHTML=opts.map(function(o,i){return '<div class="opt" data-i="'+i+'"><label>Proje<input data-k="proje" value="'+esc(o.proje)+'"></label><label>Bölge<input data-k="bolge" value="'+esc(o.bolge)+'"></label><label>Tip<input data-k="tip" value="'+esc(o.tip)+'"></label><label>Fiyat £<input data-k="fiyat" type="number" value="'+o.fiyat+'"></label><label>Hizmet bedeli £/yıl<input data-k="hizmet" type="number" value="'+o.hizmet+'"></label><div class="row"><label style="flex:1">Teslim<input data-k="teslim" value="'+esc(o.teslim)+'"></label><button class="btn ghost small rm" data-rm="'+i+'" title="Sil">×</button></div></div>';}).join('');
+    $$('#opts input').forEach(function(inp){inp.addEventListener('input',function(){var o=opts[+inp.closest('.opt').dataset.i];var k=inp.dataset.k;o[k]=inp.type==='number'?+inp.value:inp.value;if(k==='fiyat')o.kira=Math.round(o.fiyat*YIELD/12);renderSheet();});});
+    $$('#opts [data-rm]').forEach(function(b){b.addEventListener('click',function(){opts.splice(+b.dataset.rm,1);renderOpts();renderSheet();});});
+  }
+  $('#opt-add').addEventListener('click',function(){if(opts.length>=4)return toast('En fazla dört seçenek');opts.push({proje:'',bolge:'',tip:'1+1',fiyat:400000,hizmet:3000,teslim:'',kira:Math.round(400000*YIELD/12)});renderOpts();renderSheet();});
+  ['#c-name','#c-path','#c-res','#c-add'].forEach(function(s){$(s).addEventListener('input',renderSheet);$(s).addEventListener('change',renderSheet);});
+  function calcOpt(o){var nr=$('#c-res').value==='nr', add=$('#c-add').value==='y';var tax=sdlt(o.fiyat,nr,add);var kira=o.kira||Math.round(o.fiyat*YIELD/12);return {tax:tax,kira:kira,net:kira*12-o.hizmet,getiri:(kira*12-o.hizmet)/(o.fiyat+tax)*100,toplam:o.fiyat+tax+2500,tl:o.fiyat*FX};}
+  function renderSheet(){
+    var d=new Date(); var tarih=d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+    var rows=opts.map(function(o){var c=calcOpt(o);return '<tr><td><b>'+esc(o.proje||'—')+'</b><br><small>'+esc(o.bolge)+' · '+esc(o.tip)+'</small></td><td class="n"><b>'+gbp(o.fiyat)+'</b><br><small>≈ ₺'+(c.tl/1e6).toLocaleString('tr-TR',{maximumFractionDigits:1})+' mn</small></td><td class="n">'+gbp(c.tax)+'</td><td class="n">'+gbp(o.hizmet)+'</td><td class="n"><b>'+gbp(c.kira)+'</b>/ay</td><td class="n">%'+c.getiri.toFixed(1)+'</td><td class="n">'+gbp(c.toplam)+'</td><td>'+esc(o.teslim)+'</td></tr>';}).join('');
+    $('#sheet').innerHTML='<div class="sh"><div><b>ATLAS</b><small>Real Estate London · Helin Özçelik</small></div><div style="text-align:right"><small>Kısa liste · '+tarih+'</small><br><small>'+esc($('#c-name').value)+' · '+esc($('#c-path').value)+'</small></div></div><h2>'+esc($('#c-name').value)+' için '+opts.length+' seçenek, rakamlarıyla.</h2><table><thead><tr><th>Proje</th><th class="n">Fiyat</th><th class="n">Damga vergisi</th><th class="n">Hizmet bedeli / yıl</th><th class="n">Tahmini kira</th><th class="n">Net getiri</th><th class="n">Toplam giriş</th><th>Teslim</th></tr></thead><tbody>'+rows+'</tbody></table><p class="note">Damga vergisi: 2026 SDLT dilimleri'+($('#c-add').value==='y'?' + %5 ek konut':'')+($('#c-res').value==='nr'?' + %2 yurt dışı alıcı':'')+'. Toplam giriş = fiyat + vergi + yaklaşık £2.500 avukat ve masraf. Tahmini kira ve getiri bölge ortalamasıdır; proje bazında yeniden hesaplanır. Kur 59,5 ₺/£. Bilgi amaçlıdır; kesin rakamları işlem öncesi avukat ve muhasebeci verir.</p><p class="note">Sonraki adım: 15 dakikalık görüşmede seçeneği daraltırız; ev turu videoyla bir hafta içinde gelir. WhatsApp +44 7493 099830 · helin@atlasrealestatelondon.com</p>';
+  }
+  renderOpts(); renderSheet();
+  $('#print').addEventListener('click',function(){$('#t-liste').click();window.print();});
+  $('#sheet-wa').addEventListener('click',function(){var s=$('#c-name').value+' için kısa liste · Atlas\n\n'+opts.map(function(o,i){var c=calcOpt(o);return (i+1)+') '+o.proje+' · '+o.bolge+' · '+o.tip+'\nFiyat '+gbp(o.fiyat)+' (≈ ₺'+(c.tl/1e6).toLocaleString('tr-TR',{maximumFractionDigits:1})+' mn) · Damga vergisi '+gbp(c.tax)+' · Hizmet bedeli '+gbp(o.hizmet)+'/yıl\nTahmini kira '+gbp(c.kira)+'/ay · Net getiri %'+c.getiri.toFixed(1)+' · Teslim '+o.teslim;}).join('\n\n')+'\n\nHangisini ilk görüşmede açalım? 15 dakika yeter.';copyText(s);});
+
+  // 3 · Content from voice note
+  var VOICE='Sen Atlas Real Estate London için yazan bir editörsün. Marka dili ("Atlas dili") kuralları: olumlu ve kesin; "zor" kelimesi geçmez; her vaat bir rakam ya da süre taşır; kısa, fiille başlayan cümleler; müşteriye "siz" diye hitap; Helin yalnızca birinci tekil konuşur; Londra kelime dağarcığı (bölge adı, Zone, hat adı). Yasak klişeler: hayalinizdeki ev, güvenilir, kaliteli hizmet, anahtar teslim, yanınızdayız, tanıdık, zor. Türkçe yaz. Yalnızca notta geçen rakamları kullan, rakam uydurma.';
+  var sampleFn=null, ctl=null;
+  if(window.claude&&window.claude.use){ window.claude.use('sample').then(function(s){sampleFn=s; if(!s){$('#gen-msg').textContent='Üretim bu görünümde kapalı; sayfayı claude.ai içinde açın.';}},function(){}); }
+  else { $('#gen-msg').textContent='Üretim yalnızca claude.ai içinde çalışır.'; }
+  var KEYS={car:['car','carousel','karusel','carousel_cards','cards','kartlar'],reel:['reel','reels','reel_script','senaryo','script'],cap:['cap','caption','aciklama','açıklama','description','post'],news:['news','newsletter','bulten','bülten','bulletin']};
+  function pick(obj,k){ if(!obj||typeof obj!=='object') return null; var names=KEYS[k]; for(var i=0;i<names.length;i++){ for(var key in obj){ if(key.toLowerCase().replace(/[^a-zçğıöşü_]/g,'')===names[i]) return obj[key]; } } return null; }
+  function flat(v){ if(v==null) return ''; if(typeof v==='string') return v; if(Array.isArray(v)) return v.map(function(x,i){return (i+1)+'. '+flat(x);}).join('\n'); if(typeof v==='object'){ return Object.keys(v).map(function(k){return (typeof v[k]==='string'?v[k]:k+': '+flat(v[k]));}).join('\n'); } return String(v); }
+  function parseLoose(t){ try{ return JSON.parse(t); }catch(e){} var m=t.match(/```(?:json)?\s*([\s\S]*?)```/); if(m){ try{ return JSON.parse(m[1]); }catch(e){} } var i=t.indexOf('{'), j=t.lastIndexOf('}'); if(i>-1&&j>i){ try{ return JSON.parse(t.slice(i,j+1)); }catch(e){} } return null; }
+  function setBlocks(obj,raw){
+    var any=false; var root=obj; if(obj&&typeof obj==='object'&&!pick(obj,'car')&&!pick(obj,'reel')){ for(var k in obj){ if(obj[k]&&typeof obj[k]==='object'&&(pick(obj[k],'car')||pick(obj[k],'reel'))){ root=obj[k]; break; } } }
+    var saved={};
+    ['car','reel','cap','news'].forEach(function(k){ var el=$('#g-'+k); var v=flat(pick(root,k)); if(v){ el.classList.remove('muted'); el.textContent=v; any=true; saved[k]=v; } else { el.classList.add('muted'); el.textContent='—'; } });
+    if(!any&&raw){ var el=$('#g-car'); el.classList.remove('muted'); el.textContent=raw; saved.car=raw; }
+    try{ localStorage.setItem('hp-gen',JSON.stringify(saved)); }catch(e){}
+    return any;
+  }
+  try{ var g=JSON.parse(localStorage.getItem('hp-gen')||'null'); if(g){ ['car','reel','cap','news'].forEach(function(k){ if(g[k]){ $('#g-'+k).classList.remove('muted'); $('#g-'+k).textContent=g[k]; } }); } }catch(e){}
+  $('#gen').addEventListener('click',function(){
+    if(!sampleFn){$('#gen-msg').textContent='Üretim bu görünümde kapalı; sayfayı claude.ai içinde açın.';return;}
+    var note=$('#note').value.trim(); if(!note){$('#gen-msg').textContent='Önce not yazın ya da söyleyin.';return;}
+    ctl=new AbortController(); $('#gen').disabled=true; $('#stop').hidden=false; $('#gen-msg').textContent='Düşünüyor… (5-40 sn)';
+    ['car','reel','cap','news'].forEach(function(k){var el=$('#g-'+k);el.classList.add('muted');el.textContent=k==='car'?'Düşünüyor…':'—';});
+    var prompt=VOICE+'\n\nHelin\'in sesli notu:\n"""'+note.slice(0,6000)+'"""\n\nBu nottan dört içerik üret. Cevabı YALNIZCA tek bir JSON nesnesi olarak ver, başka hiçbir şey yazma. Anahtarlar tam olarak şunlar olsun: "car" (6 elemanlı dizi: carousel kartı metinleri; ilk kart bir rakamla açılır, son kart "Kaydedin, görüşmede açalım." benzeri tek aksiyon), "reel" (metin: 45 saniyelik yüz-kameraya Reel senaryosu; ilk 3 saniyede rakam; sahne sahne; Helin ağzından birinci tekil), "cap" (metin: Instagram açıklaması, 3-4 cümle ve 5 hashtag), "news" (metin: aylık bülten için 4-5 cümlelik Helin notu, birinci tekil).';
+    var raw='';
+    sampleFn(prompt,{signal:ctl.signal,modelTier:'default',cache:false,onText:function(u){raw=u.text;var el=$('#g-car');el.textContent='Yazılıyor…\n\n'+u.text.slice(-400);}}).then(function(r){
+      var v=parseLoose(r.text); var ok=setBlocks(v,r.text);
+      $('#gen-msg').textContent=ok?'Hazır. Okuyun, gerekirse düzeltin, kopyalayın.':'Hazır; biçim beklenenden farklı geldi, ham metni ilk kutuya koydum.';
+      if(window.innerWidth<820) $('#gen-out').scrollIntoView({behavior:'smooth'});
+    }).catch(function(e){
+      var m={not_granted:'İzin verilmedi; üretim bu görünümde kapalı.',rate_limited:'Şu an yoğun; biraz sonra yeniden deneyin.',cancelled:'Durduruldu.',refused:'Bu not için üretim yapılamadı; notu değiştirin.'};
+      $('#gen-msg').textContent=m[e.code]||'Bağlantı sorunu; yeniden deneyin.'; if(e.code==='not_granted'||e.code==='sampling_disabled'){sampleFn=null;}
+      if(e.text){ var v=parseLoose(e.text); setBlocks(v,e.text); } else { $('#g-car').textContent='—'; }
+    }).then(function(){$('#gen').disabled=false;$('#stop').hidden=true;});
+  });
+  $('#stop').addEventListener('click',function(){if(ctl)ctl.abort();});
+  // Mic (Web Speech API, where available)
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition, rec=null;
+  if(!SR){$('#mic').style.display='none';}
+  else { $('#mic').addEventListener('click',function(){ if(rec){rec.stop();return;} rec=new SR(); rec.lang='tr-TR'; rec.continuous=true; rec.interimResults=true; var base=$('#note').value.trim(); $('#mic').classList.add('on'); rec.onresult=function(ev){var s='';for(var i=0;i<ev.results.length;i++)s+=ev.results[i][0].transcript+' ';$('#note').value=(base?base+' ':'')+s.trim();}; rec.onend=function(){$('#mic').classList.remove('on');rec=null;}; rec.onerror=rec.onend; try{rec.start();}catch(e){rec.onend();} }); }
+
+  // 4 · Quick replies
+  var QA={tr:[
+    ['Fiyatlar ne kadar?','Bölgeye göre değişir: Zone 2-3 yeni projede 1+1 £420-550 bin, 2+1 £600-800 bin. Bütçenizi yazın, 3 iş günü içinde rakamlarıyla iki üç seçenek göndereyim.'],
+    ['Yurt dışından alınca vergi ne kadar?','İngiltere dışında yaşayıp ikinci ev alana standart dilimlerin üstüne %7 eklenir. £500 bin için toplam yaklaşık £50 bin. Siteden 2 dakikada hesaplayabilirsiniz: atlasrealestatelondon.com/#hesap'],
+    ['Görmeden alınır mı?','Alınır; müşterilerimin çoğu böyle aldı. Her evi sizin için gezer, odaları videoyla gösteririm; vergi ve hizmet bedeli önceden yazılı gelir.'],
+    ['Kira getirisi ne kadar?','Londra\'da yeni projelerde brüt %4-5. £450 binlik bir 1+1 için aylık £1.900-2.000. Hizmet bedeli düşülmüş net rakamı kısa listede görürsünüz.'],
+    ['Öğrenci için garantör gerekiyor mu?','Üç yol var: İngiltere\'de garantör, garantör hizmeti (yıllık kiranın yüzde birkaçı) ya da 6-12 ay peşin kira. Üniversiteyi yazın, hangisinin uyduğunu söyleyeyim.'],
+    ['Ne zaman teslim?','Projeye göre 2026 sonu ile 2027 arası; hazır daireler de var. Teslime kadar genellikle %10 peşinat yeter; kalanı teslimde.'],
+    ['Kredi çıkar mı?','Yurt dışında yaşayanlara kredi veren bankalar var; genellikle %25-40 peşinat ister. Teslimden 6 ay önce başvuruyu birlikte yaparız.'],
+    ['Süreç ne kadar sürer?','İlk görüşme 15 dakika. Bir hafta içinde kısa liste. Rezervasyondan sözleşmeye 4-6 hafta. Kiralamada başvurudan anahtara 5-10 iş günü.'],
+    ['Ücretiniz ne?','Satın almada geliştirici öder, size ek maliyet yok. Kiralama ve yönetimde kiranın yaklaşık %10-15\'i; rakam baştan yazılır.'],
+    ['Ne zaman görüşebiliriz?','Hafta içi 9-18 Londra saati; Türkiye saatiyle akşam da olur. Uygun iki saat yazın, 15 dakikalık görüşmeyi ayarlayayım.'],
+    ['Mesai dışı otomatik cevap','Mesajınız ulaştı. Yarın 10:00\'a kadar (Londra saati) dönüyorum. Acilse konuyu bir satırda yazın; önce ona bakıyorum. — Helin'],
+    ['Yorum isteme (anahtar tesliminden sonra)','Anahtar sizde, tebrikler! Bir ricam var: iki cümlelik bir Google yorumu, sizden sonra gelecek aileler için en büyük yardım olur. Bağlantı: g.page/atlasrealestatelondon/review — Helin']
+  ],en:[
+    ['How much are prices?','It depends on the area: Zone 2-3 new-build one-beds £420-550k, two-beds £600-800k. Send me your budget and I\'ll reply within 3 working days with two or three options and the numbers.'],
+    ['What tax do overseas buyers pay?','If you live outside the UK and are buying a second home, 7% is added on top of the standard bands. On £500k that is roughly £50k in total. Two minutes on the site: atlasrealestatelondon.com/#hesap'],
+    ['Can I buy without viewing?','Yes; most of my clients did. I view every home for you and walk through the rooms on video; tax and service charge come in writing beforehand.'],
+    ['What rental yield?','New builds in London return 4-5% gross. A £450k one-bed brings £1,900-2,000 a month. The shortlist shows the net figure after service charge.'],
+    ['Does a student need a guarantor?','Three routes: a UK guarantor, a guarantor service (a few percent of annual rent) or 6-12 months\' rent in advance. Tell me the university and I\'ll say which fits.'],
+    ['When is completion?','Between late 2026 and 2027 depending on the development; some homes are ready now. Usually 10% on exchange; the balance on completion.'],
+    ['Can I get a mortgage?','Several lenders serve overseas buyers, usually with 25-40% deposit. We apply together 6 months before completion.'],
+    ['How long does it take?','First call 15 minutes. Shortlist within a week. Reservation to exchange 4-6 weeks. For rentals, application to keys in 5-10 working days.'],
+    ['What is your fee?','On purchases the developer pays; nothing extra for you. For letting and management roughly 10-15% of rent, written down up front.'],
+    ['When can we talk?','Weekdays 9-18 London time; evenings on Türkiye time also work. Send two slots and I\'ll set the 15-minute call.'],
+    ['Out-of-hours auto reply','Your message has arrived. I\'ll reply by 10:00 London time tomorrow. If it is urgent, put the subject in one line and I\'ll look at that first. — Helin'],
+    ['Review request (after handover)','Keys are yours, congratulations! One favour: a two-sentence Google review is the biggest help for the families coming after you. Link: g.page/atlasrealestatelondon/review — Helin']
+  ]};
+  function renderQA(l){ $('#qa').innerHTML=QA[l].map(function(q,i){return '<details'+(i===0?' open':'')+'><summary>'+esc(q[0])+'<span class="pill">'+(i<10?(l==='tr'?'Hızlı yanıt':'Quick reply'):(l==='tr'?'Şablon':'Template'))+'</span></summary><div class="a"><p id="qa-'+l+'-'+i+'">'+esc(q[1])+'</p><div class="row"><button class="btn ghost small" data-copy="#qa-'+l+'-'+i+'">'+(l==='tr'?'Kopyala':'Copy')+'</button></div></div></details>';}).join(''); $$('[data-lang]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===l?'true':'false');}); }
+  $$('[data-lang]').forEach(function(b){b.addEventListener('click',function(){renderQA(b.dataset.lang);});});
+  renderQA('tr');
+})();
+</script>
+</body>
+</html>
